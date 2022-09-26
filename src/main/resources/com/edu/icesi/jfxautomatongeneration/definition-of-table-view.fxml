@@ -5,13 +5,14 @@
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.VBox?>
 
-
 <VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1">
    <children>
       <Label text="Insert the number of states" textAlignment="CENTER" />
-      <TextField fx:id="numberOfStatesTxtField" prefHeight="26.0" prefWidth="506.0" />
+      <TextField fx:id="numberOfStatesTxtField" prefHeight="26.0" prefWidth="506.0" promptText="2" />
       <Label text="Insert the elements with which the transitions are made (separated by commas)" />
-      <TextField fx:id="transitionElementsTxtField" promptText="0,1" text="0,1" />
+      <TextField fx:id="transitionElementsTxtField" promptText="a,b" text="a,b" />
+      <Label text="Insert the outputs of the automaton (separated by commas)" />
+      <TextField fx:id="outputsTxtField" promptText="0,1" text="0,1" />
       <Button mnemonicParsing="false" onAction="#continueBtn" text="Continue" />
    </children>
 </VBox>

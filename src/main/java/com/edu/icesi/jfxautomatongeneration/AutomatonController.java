@@ -17,6 +17,7 @@ import javafx.stage.Stage;
 
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.ResourceBundle;
 
@@ -30,12 +31,17 @@ public class AutomatonController implements Initializable {
     @FXML
     private TextField transitionElementsTxtField;
 
+    @FXML
+    private TextField outputsTxtField;
+
     private int numberOfRows;
     private int numberOfColumns;
     private String[] transitions;
+    private String[] outputs;
     private int counter = 0;
 
-    private ObservableList<String> options;
+    private ObservableList<String> stateOptions;
+    private ObservableList<String> outputsOptions;
     private ArrayList<String> states = new ArrayList<>();
 
     @FXML
@@ -48,7 +54,8 @@ public class AutomatonController implements Initializable {
         for(int i=0;i<numberOfRows;i++){
             states.add("Q"+i);
         }
-        options = FXCollections.observableArrayList(states);
+        stateOptions = FXCollections.observableArrayList(states);
+        outputsOptions = FXCollections.observableArrayList(Arrays.asList(outputs));
     }
 
     private void launchFXML(String fxml, String title) {
@@ -86,6 +93,7 @@ public class AutomatonController implements Initializable {
         numberOfRows = Integer.parseInt(numberOfStatesTxtField.getText());
         transitions = transitionElementsTxtField.getText().split(",");
         numberOfColumns = transitions.length;
+        outputs = outputsTxtField.getText().split(",");
         System.out.println("number of rows "+numberOfRows);
         System.out.println("number of columns "+numberOfColumns);
         initializeOptions();
@@ -117,25 +125,29 @@ public class AutomatonController implements Initializable {
         automatonTableview.getColumns().add(stateColumn);
         for (int i = 0; i < numberOfColumns; i++) {
             TableColumn<TableViewTest, StringProperty> column = new TableColumn<>(transitions[i]);
-
-
-            column.setCellFactory(col -> {
-                TableCell<TableViewTest, StringProperty> c = new TableCell<>();
-                final ComboBox<String> comboBox = new ComboBox<>(options);
-                c.itemProperty().addListener((observable, oldValue, newValue) -> {
-                    if (oldValue != null) {
-                        comboBox.valueProperty().unbindBidirectional(oldValue);
-                    }
-                    if (newValue != null) {
-                        comboBox.valueProperty().bindBidirectional(newValue);
-                    }
-                });
-                c.graphicProperty().bind(Bindings.when(c.emptyProperty()).then((Node) null).otherwise(comboBox));
-                return c;
-            });
+            fillWithCombobox(column,stateOptions);
             automatonTableview .getColumns().add(column);
         }
-        automatonTableview.getColumns().add(new TableColumn<>("Salida"));
+        TableColumn<TableViewTest, StringProperty> outputColumn = new TableColumn<>("Output");
+        fillWithCombobox(outputColumn,outputsOptions);
+        automatonTableview.getColumns().add(outputColumn);
+    }
+
+    private void fillWithCombobox(TableColumn<TableViewTest, StringProperty> column, ObservableList cbBox){
+        column.setCellFactory(col -> {
+            TableCell<TableViewTest, StringProperty> c = new TableCell<>();
+            final ComboBox<String> comboBox = new ComboBox<>(cbBox);
+            c.itemProperty().addListener((observable, oldValue, newValue) -> {
+                if (oldValue != null) {
+                    comboBox.valueProperty().unbindBidirectional(oldValue);
+                }
+                if (newValue != null) {
+                    comboBox.valueProperty().bindBidirectional(newValue);
+                }
+            });
+            c.graphicProperty().bind(Bindings.when(c.emptyProperty()).then((Node) null).otherwise(comboBox));
+            return c;
+        });
     }
 
     private void insertValues(){
