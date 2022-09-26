@@ -6,12 +6,12 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<VBox alignment="CENTER" prefHeight="448.0" prefWidth="309.0" spacing="20.0" style="-fx-background-color: F373EF;" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/18" fx:controller="com.edu.icesi.jfxautomatongeneration.HelloController">
+<VBox alignment="CENTER" prefHeight="448.0" prefWidth="309.0" spacing="20.0" style="-fx-background-color: F373EF;" xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.edu.icesi.jfxautomatongeneration.AutomatonController">
     <padding>
         <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
     </padding>
 
-          <Label fx:id="welcomeText" contentDisplay="TOP" text="Automaton generator" textAlignment="CENTER" textFill="WHITE">
+          <Label contentDisplay="TOP" text="Automaton generator" textAlignment="CENTER" textFill="WHITE">
       <opaqueInsets>
          <Insets />
       </opaqueInsets>
@@ -20,6 +20,6 @@
       </font>
    </Label>
    <Label text="Welcome to Automaton generation program. ¿What would you like to do?" textAlignment="CENTER" textFill="WHITE" wrapText="true" />
-    <Button onAction="#onHelloButtonClick" prefHeight="26.0" prefWidth="83.0" text="Start" />
-   <Button mnemonicParsing="false" prefHeight="26.0" prefWidth="90.0" text="Instructions" />
+    <Button onAction="#startApplication" prefHeight="26.0" prefWidth="83.0" text="Start" />
+   <Button mnemonicParsing="false" onAction="#showInstructions" prefHeight="26.0" prefWidth="90.0" text="Instructions" />
 </VBox>
