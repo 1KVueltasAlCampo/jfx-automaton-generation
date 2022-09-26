@@ -1,24 +1,38 @@
 package com.edu.icesi.jfxautomatongeneration;
 
+import javafx.beans.binding.Bindings;
+import javafx.beans.property.StringProperty;
+import javafx.beans.value.ObservableValue;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Label;
-import javafx.scene.control.TableView;
+import javafx.scene.control.*;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.ResourceBundle;
 
 public class AutomatonController implements Initializable {
-    @FXML
-    private Label welcomeText;
 
     @FXML
-    private TableView automatonTableview;
+    private TableView automatonTableview = new TableView<>();
+    @FXML
+    private TextField numberOfStatesTxtField;
+
+    @FXML
+    private TextField transitionElementsTxtField;
+
+    private int numberOfRows;
+    private int numberOfColumns;
+    private String[] transitions;
 
     @FXML
     protected void startApplication() {
@@ -59,28 +73,63 @@ public class AutomatonController implements Initializable {
 
     @FXML
     protected void continueBtn(){
-        
+        numberOfRows = Integer.parseInt(numberOfStatesTxtField.getText());
+        transitions = transitionElementsTxtField.getText().split(",");
+        numberOfColumns = transitions.length;
+        System.out.println("number of rows "+numberOfRows);
+        System.out.println("number of columns "+numberOfColumns);
+        insertColumns();
+        insertValues();
+        launchFXML("automaton-table-view.fxml","Automaton table");
     }
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        //insertColumns();
+        insertColumns();
+        insertValues();
     }
 
-    /*
     private void insertColumns(){
-        automatonTableview = new TableView<>();
-        for (int i = 0; i < columnNames.size(); i++) {
-            final int finalIdx = i;
-            TableColumn<ObservableList<String>, String> column = new TableColumn<>(
-                    columnNames.get(i)
+        ObservableList<String> options = FXCollections.observableArrayList(
+                "1",
+                "2",
+                "3"
+        );
+        automatonTableview.getColumns().add(new TableColumn<>("Estado"));
+        for (int i = 0; i < numberOfColumns; i++) {
+            TableColumn<TableViewTest, StringProperty> column = new TableColumn<>("option");
+           
+
+            column.setCellFactory(col -> {
+                TableCell<TableViewTest, StringProperty> c = new TableCell<>();
+                final ComboBox<String> comboBox = new ComboBox<>(options);
+                c.itemProperty().addListener((observable, oldValue, newValue) -> {
+                    if (oldValue != null) {
+                        comboBox.valueProperty().unbindBidirectional(oldValue);
+                    }
+                    if (newValue != null) {
+                        comboBox.valueProperty().bindBidirectional(newValue);
+                    }
+                });
+                c.graphicProperty().bind(Bindings.when(c.emptyProperty()).then((Node) null).otherwise(comboBox));
+                return c;
+            });
+            automatonTableview .getColumns().add(column);
+        }
+        automatonTableview.getColumns().add(new TableColumn<>("Salida"));
+    }
+
+    private void insertValues(){
+        List<ComboBox> comboBoxes = new ArrayList<>();
+        comboBoxes.add(new ComboBox(FXCollections.observableArrayList("a","b","c")));
+        comboBoxes.get(0).setItems(FXCollections.observableArrayList("a","b","c"));
+        for (int i = 0; i < numberOfRows; i++) {
+            automatonTableview.getItems().add(
+                    FXCollections.observableArrayList(
+                        comboBoxes
+                    )
             );
-            column.setCellValueFactory(param ->
-                    new ReadOnlyObjectWrapper<>(param.getValue().get(finalIdx))
-            );
-            tableView.getColumns().add(column);
         }
     }
-     */
 
 }
