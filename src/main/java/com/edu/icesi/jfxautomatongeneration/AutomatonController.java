@@ -33,13 +33,23 @@ public class AutomatonController implements Initializable {
     private int numberOfRows;
     private int numberOfColumns;
     private String[] transitions;
+    private int counter = 0;
+
+    private ObservableList<String> options;
+    private ArrayList<String> states = new ArrayList<>();
 
     @FXML
     protected void startApplication() {
         launchFXML("definition-of-table-view.fxml","Definition");
     }
 
-
+    private void initializeOptions(){
+        states.clear();
+        for(int i=0;i<numberOfRows;i++){
+            states.add("Q"+i);
+        }
+        options = FXCollections.observableArrayList(states);
+    }
 
     private void launchFXML(String fxml, String title) {
         Parent root = loadFxml(fxml);
@@ -78,6 +88,7 @@ public class AutomatonController implements Initializable {
         numberOfColumns = transitions.length;
         System.out.println("number of rows "+numberOfRows);
         System.out.println("number of columns "+numberOfColumns);
+        initializeOptions();
         insertColumns();
         insertValues();
         launchFXML("automaton-table-view.fxml","Automaton table");
@@ -90,15 +101,23 @@ public class AutomatonController implements Initializable {
     }
 
     private void insertColumns(){
-        ObservableList<String> options = FXCollections.observableArrayList(
-                "1",
-                "2",
-                "3"
-        );
-        automatonTableview.getColumns().add(new TableColumn<>("Estado"));
+        counter = -2;
+        TableColumn<String,StringProperty> stateColumn = new TableColumn<>("Estado");
+        stateColumn.setCellFactory(c ->{
+            TableCell<String,StringProperty> de = new TableCell<>();
+            System.out.println(counter);
+            if(counter<numberOfRows){
+                System.out.println("True");
+                de.setText("Q"+counter);
+            }
+            counter++;
+            return de;
+        });
+
+        automatonTableview.getColumns().add(stateColumn);
         for (int i = 0; i < numberOfColumns; i++) {
-            TableColumn<TableViewTest, StringProperty> column = new TableColumn<>("option");
-           
+            TableColumn<TableViewTest, StringProperty> column = new TableColumn<>(transitions[i]);
+
 
             column.setCellFactory(col -> {
                 TableCell<TableViewTest, StringProperty> c = new TableCell<>();
