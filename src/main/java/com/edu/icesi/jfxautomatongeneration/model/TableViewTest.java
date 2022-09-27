@@ -1,4 +1,4 @@
-package com.edu.icesi.jfxautomatongeneration;
+package com.edu.icesi.jfxautomatongeneration.model;
 
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;

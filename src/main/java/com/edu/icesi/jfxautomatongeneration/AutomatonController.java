@@ -1,8 +1,8 @@
 package com.edu.icesi.jfxautomatongeneration;
 
+import com.edu.icesi.jfxautomatongeneration.model.TableViewTest;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.StringProperty;
-import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -13,14 +13,12 @@ import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
-import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 import java.util.ResourceBundle;
 
 public class AutomatonController implements Initializable {
@@ -36,6 +34,10 @@ public class AutomatonController implements Initializable {
     @FXML
     private TextField outputsTxtField;
 
+    @FXML
+    private TableView<?> MealyAutomatonTableview;
+
+
     private int numberOfRows;
     private int numberOfColumns;
     private String[] transitions;
@@ -46,6 +48,7 @@ public class AutomatonController implements Initializable {
     private ObservableList<String> outputsOptions;
     private ArrayList<String> states = new ArrayList<>();
     private ArrayList<ArrayList<Integer>> initialTableMoore;
+
 
     @FXML
     protected void startApplication() {
@@ -104,6 +107,11 @@ public class AutomatonController implements Initializable {
             initialTableMoore.add(values);
         }
         checkArray();
+    }
+
+    @FXML
+    void generateInitialAutomatonMealy(ActionEvent event) {
+
     }
 
     private void checkArray(){
