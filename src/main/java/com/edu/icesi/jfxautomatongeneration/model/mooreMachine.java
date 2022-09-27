@@ -11,11 +11,10 @@ public class mooreMachine {
 
     }
 
-    public ArrayList<String> deleteStatesRootUnconnected(ArrayList<ArrayList<Integer>> states){
+    public ArrayList<Integer> deleteStatesRootUnconnected(ArrayList<ArrayList<Integer>> states){
         int n=states.size();
         int m=states.get(0).size();
-
-
+        return states.get(0);
     }
 
     //Recorrer matriz, seleccionar nodos conectados a la raiz
