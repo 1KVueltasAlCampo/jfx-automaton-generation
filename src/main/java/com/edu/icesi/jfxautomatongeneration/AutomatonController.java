@@ -110,7 +110,7 @@ public class AutomatonController implements Initializable {
         }
         checkArray();
         mooreMachine = new MooreMachine(initialTableMoore);
-        
+
     }
 
     @FXML
@@ -123,6 +123,7 @@ public class AutomatonController implements Initializable {
             for(int j=0;j<numberOfColumns+1;j++){
                 System.out.println(initialTableMoore.get(i).get(j));
             }
+            System.out.println();
         }
     }
 
@@ -150,7 +151,17 @@ public class AutomatonController implements Initializable {
     }
 
     private void insertMooreColumns(){
-
+        counter = -2;
+        TableColumn statesColumn = new TableColumn("State");
+        statesColumn.setCellFactory(c ->{
+            TableCell de = new TableCell<>();
+            if(counter<numberOfRows){
+                de.setText("Q"+counter);
+            }
+            counter++;
+            return de;
+        });
+        automatonTableview.getColumns().add(statesColumn);
         for (int i = 0; i < numberOfColumns; i++) {
             TableColumn<TableViewTest, StringProperty> column = new TableColumn<>(transitions[i]);
             int finalI = i;
