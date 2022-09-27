@@ -96,8 +96,10 @@ public class AutomatonController implements Initializable {
         ObservableList<TableViewTest> list = automatonTableview.getItems();
         System.out.println(list.get(0).getOption(0));
         System.out.println(list.get(0).getOption(1));
+        System.out.println(list.get(0).getOption(2));
         System.out.println(list.get(1).getOption(0));
         System.out.println(list.get(1).getOption(1));
+        System.out.println(list.get(1).getOption(2));
     }
 
     @FXML
@@ -132,7 +134,11 @@ public class AutomatonController implements Initializable {
             automatonTableview.getColumns().add(column);
         }
         TableColumn<TableViewTest, StringProperty> outputColumn = new TableColumn<>("Output");
-
+        outputColumn.setCellValueFactory(z ->{
+            final int a = numberOfColumns;
+            StringProperty value = z.getValue().optionProperty(a);
+            return Bindings.createObjectBinding(() -> value);
+        } );
         fillWithCombobox(outputColumn,outputsOptions);
 
         automatonTableview.getColumns().add(outputColumn);
@@ -159,7 +165,7 @@ public class AutomatonController implements Initializable {
     private void insertValues(){
         for (int i = 0; i < numberOfRows; i++) {
             automatonTableview.getItems().add(
-                    new TableViewTest(numberOfColumns)
+                    new TableViewTest(numberOfColumns+1)
             );
         }
     }
