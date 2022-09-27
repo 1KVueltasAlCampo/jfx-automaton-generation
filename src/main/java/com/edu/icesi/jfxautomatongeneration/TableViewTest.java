@@ -6,7 +6,7 @@ import javafx.beans.property.StringProperty;
 public class TableViewTest {
 
 
-    private final StringProperty option = new SimpleStringProperty();
+    private StringProperty option = new SimpleStringProperty();
 
     public String getOption() {
         return option.get();

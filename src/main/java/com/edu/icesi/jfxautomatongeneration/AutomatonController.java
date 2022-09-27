@@ -5,6 +5,7 @@ import javafx.beans.property.StringProperty;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -12,6 +13,7 @@ import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 
@@ -24,7 +26,7 @@ import java.util.ResourceBundle;
 public class AutomatonController implements Initializable {
 
     @FXML
-    private TableView automatonTableview = new TableView<>();
+    private TableView<TableViewTest> automatonTableview = new TableView<>();
     @FXML
     private TextField numberOfStatesTxtField;
 
@@ -89,13 +91,18 @@ public class AutomatonController implements Initializable {
     }
 
     @FXML
+    void generateInitialAutomaton(ActionEvent event) {
+        TableColumn c = (TableColumn) automatonTableview.getColumns().get(1);
+        ObservableList<TableViewTest> list = automatonTableview.getItems();
+        System.out.println(list.get(0).getOption());
+    }
+
+    @FXML
     protected void continueBtn(){
         numberOfRows = Integer.parseInt(numberOfStatesTxtField.getText());
         transitions = transitionElementsTxtField.getText().split(",");
         numberOfColumns = transitions.length;
         outputs = outputsTxtField.getText().split(",");
-        System.out.println("number of rows "+numberOfRows);
-        System.out.println("number of columns "+numberOfColumns);
         initializeOptions();
         insertColumns();
         insertValues();
@@ -109,31 +116,28 @@ public class AutomatonController implements Initializable {
     }
 
     private void insertColumns(){
-        counter = -2;
-        TableColumn<String,StringProperty> stateColumn = new TableColumn<>("Estado");
-        stateColumn.setCellFactory(c ->{
-            TableCell<String,StringProperty> de = new TableCell<>();
-            System.out.println(counter);
-            if(counter<numberOfRows){
-                System.out.println("True");
-                de.setText("Q"+counter);
-            }
-            counter++;
-            return de;
-        });
 
-        automatonTableview.getColumns().add(stateColumn);
         for (int i = 0; i < numberOfColumns; i++) {
             TableColumn<TableViewTest, StringProperty> column = new TableColumn<>(transitions[i]);
+            column.setCellValueFactory(z ->{
+                StringProperty value = z.getValue().optionProperty();
+                return Bindings.createObjectBinding(() -> value);
+            } );
             fillWithCombobox(column,stateOptions);
-            automatonTableview .getColumns().add(column);
+            automatonTableview.getColumns().add(column);
         }
         TableColumn<TableViewTest, StringProperty> outputColumn = new TableColumn<>("Output");
+        outputColumn.setCellValueFactory(z ->{
+            final StringProperty value=z.getValue().optionProperty();
+            return Bindings.createObjectBinding(() -> value);
+        } );
         fillWithCombobox(outputColumn,outputsOptions);
+
         automatonTableview.getColumns().add(outputColumn);
     }
 
     private void fillWithCombobox(TableColumn<TableViewTest, StringProperty> column, ObservableList cbBox){
+
         column.setCellFactory(col -> {
             TableCell<TableViewTest, StringProperty> c = new TableCell<>();
             final ComboBox<String> comboBox = new ComboBox<>(cbBox);
@@ -156,9 +160,7 @@ public class AutomatonController implements Initializable {
         comboBoxes.get(0).setItems(FXCollections.observableArrayList("a","b","c"));
         for (int i = 0; i < numberOfRows; i++) {
             automatonTableview.getItems().add(
-                    FXCollections.observableArrayList(
-                        comboBoxes
-                    )
+                    new TableViewTest()
             );
         }
     }
