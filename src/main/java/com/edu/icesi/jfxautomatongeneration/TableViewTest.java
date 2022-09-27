@@ -3,21 +3,32 @@ package com.edu.icesi.jfxautomatongeneration;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 
-public class TableViewTest {
+import java.util.ArrayList;
+import java.util.List;
 
+public class TableViewTest {
+    private List<StringProperty> options = new ArrayList<>();
+    public TableViewTest(int size){
+        createOptions(size);
+    }
+    private void createOptions(int size){
+        for (int i=0;i<size;i++){
+            options.add(new SimpleStringProperty());
+        }
+    }
 
     private StringProperty option = new SimpleStringProperty();
 
-    public String getOption() {
-        return option.get();
+    public String getOption(int b) {
+        return options.get(b).get();
     }
 
     public void setOption(String value) {
         option.set(value);
     }
 
-    public StringProperty optionProperty() {
-        return option;
+    public StringProperty optionProperty(int index) {
+        return options.get(index);
     }
 
 }

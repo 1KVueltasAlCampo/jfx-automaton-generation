@@ -94,7 +94,10 @@ public class AutomatonController implements Initializable {
     void generateInitialAutomaton(ActionEvent event) {
         TableColumn c = (TableColumn) automatonTableview.getColumns().get(1);
         ObservableList<TableViewTest> list = automatonTableview.getItems();
-        System.out.println(list.get(0).getOption());
+        System.out.println(list.get(0).getOption(0));
+        System.out.println(list.get(0).getOption(1));
+        System.out.println(list.get(1).getOption(0));
+        System.out.println(list.get(1).getOption(1));
     }
 
     @FXML
@@ -119,18 +122,17 @@ public class AutomatonController implements Initializable {
 
         for (int i = 0; i < numberOfColumns; i++) {
             TableColumn<TableViewTest, StringProperty> column = new TableColumn<>(transitions[i]);
+            int finalI = i;
             column.setCellValueFactory(z ->{
-                StringProperty value = z.getValue().optionProperty();
+                final int a = finalI;
+                StringProperty value = z.getValue().optionProperty(a);
                 return Bindings.createObjectBinding(() -> value);
             } );
             fillWithCombobox(column,stateOptions);
             automatonTableview.getColumns().add(column);
         }
         TableColumn<TableViewTest, StringProperty> outputColumn = new TableColumn<>("Output");
-        outputColumn.setCellValueFactory(z ->{
-            final StringProperty value=z.getValue().optionProperty();
-            return Bindings.createObjectBinding(() -> value);
-        } );
+
         fillWithCombobox(outputColumn,outputsOptions);
 
         automatonTableview.getColumns().add(outputColumn);
@@ -155,12 +157,9 @@ public class AutomatonController implements Initializable {
     }
 
     private void insertValues(){
-        List<ComboBox> comboBoxes = new ArrayList<>();
-        comboBoxes.add(new ComboBox(FXCollections.observableArrayList("a","b","c")));
-        comboBoxes.get(0).setItems(FXCollections.observableArrayList("a","b","c"));
         for (int i = 0; i < numberOfRows; i++) {
             automatonTableview.getItems().add(
-                    new TableViewTest()
+                    new TableViewTest(numberOfColumns)
             );
         }
     }
