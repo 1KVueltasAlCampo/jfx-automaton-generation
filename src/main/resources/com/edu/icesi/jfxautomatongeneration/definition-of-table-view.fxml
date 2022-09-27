@@ -2,6 +2,7 @@
 
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.control.SplitPane?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.VBox?>
 
@@ -13,6 +14,11 @@
       <TextField fx:id="transitionElementsTxtField" promptText="a,b" text="a,b" />
       <Label text="Insert the outputs of the automaton (separated by commas)" />
       <TextField fx:id="outputsTxtField" promptText="0,1" text="0,1" />
-      <Button mnemonicParsing="false" onAction="#continueBtn" text="Continue" />
+      <SplitPane dividerPositions="0.09224598930481283" prefHeight="32.0" prefWidth="222.0">
+         <items>
+            <Button mnemonicParsing="false" onAction="#buildMooreBtn" prefHeight="26.0" prefWidth="251.0" text="Moore" />
+            <Button mnemonicParsing="false" onAction="#buildMealyBtn" prefHeight="26.0" prefWidth="230.0" text="Mealy" />
+         </items>
+      </SplitPane>
    </children>
 </VBox>

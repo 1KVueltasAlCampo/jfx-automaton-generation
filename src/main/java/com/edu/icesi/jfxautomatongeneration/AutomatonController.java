@@ -115,7 +115,7 @@ public class AutomatonController implements Initializable {
     }
 
     @FXML
-    protected void continueBtn(){
+    protected void buildMooreBtn(){
         numberOfRows = Integer.parseInt(numberOfStatesTxtField.getText());
         transitions = transitionElementsTxtField.getText().split(",");
         numberOfColumns = transitions.length;
@@ -124,6 +124,11 @@ public class AutomatonController implements Initializable {
         insertColumns();
         insertValues();
         launchFXML("automaton-table-view.fxml","Automaton table");
+    }
+
+    @FXML
+    protected void buildMealyBtn() {
+
     }
 
     @Override
