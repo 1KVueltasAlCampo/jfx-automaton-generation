@@ -36,7 +36,7 @@ public class AutomatonController implements Initializable {
     private TextField outputsTxtField;
 
     @FXML
-    private TableView<?> MealyAutomatonTableview;
+    private TableView<TableViewTest> MealyAutomatonTableview = new TableView<>();
 
 
     private int numberOfRows;
@@ -129,25 +129,35 @@ public class AutomatonController implements Initializable {
 
     @FXML
     protected void buildMooreBtn(){
+        tableGenericInitialize();
+        insertMooreColumns();
+        insertMooreValues();
+        launchFXML("automaton-table-view.fxml","Automaton table");
+    }
+    @FXML
+    protected void buildMealyBtn() {
+        tableGenericInitialize();
+        insertMealyColumns();
+        insertMealyValues();
+        launchFXML("Mealyautomaton-table-view.fxml","Automaton table");
+    }
+
+    private void tableGenericInitialize(){
         numberOfRows = Integer.parseInt(numberOfStatesTxtField.getText());
         transitions = transitionElementsTxtField.getText().split(",");
         numberOfColumns = transitions.length;
         outputs = outputsTxtField.getText().split(",");
         initializeOptions();
-        insertMooreColumns();
-        insertMooreValues();
-        launchFXML("automaton-table-view.fxml","Automaton table");
     }
 
-    @FXML
-    protected void buildMealyBtn() {
 
-    }
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         insertMooreColumns();
         insertMooreValues();
+        insertMealyColumns();
+        insertMealyValues();
     }
 
     private void insertMooreColumns(){
@@ -165,23 +175,53 @@ public class AutomatonController implements Initializable {
         for (int i = 0; i < numberOfColumns; i++) {
             TableColumn<TableViewTest, StringProperty> column = new TableColumn<>(transitions[i]);
             int finalI = i;
-            column.setCellValueFactory(z ->{
-                final int a = finalI;
-                StringProperty value = z.getValue().optionProperty(a);
-                return Bindings.createObjectBinding(() -> value);
-            } );
+            cellValueFactory(column,finalI);
             fillWithCombobox(column,stateOptions);
             automatonTableview.getColumns().add(column);
         }
         TableColumn<TableViewTest, StringProperty> outputColumn = new TableColumn<>("Output");
-        outputColumn.setCellValueFactory(z ->{
-            final int a = numberOfColumns;
-            StringProperty value = z.getValue().optionProperty(a);
-            return Bindings.createObjectBinding(() -> value);
-        } );
+        cellValueFactory(outputColumn,numberOfColumns);
         fillWithCombobox(outputColumn,outputsOptions);
 
         automatonTableview.getColumns().add(outputColumn);
+    }
+
+    private void insertMealyColumns(){
+        counter = -2;
+        TableColumn statesColumn = new TableColumn("State");
+        statesColumn.setCellFactory(c ->{
+            TableCell de = new TableCell<>();
+            if(counter<numberOfRows){
+                de.setText("Q"+counter);
+            }
+            counter++;
+            return de;
+        });
+        MealyAutomatonTableview.getColumns().add(statesColumn);
+
+        for (int i = 0; i < numberOfColumns*2; i++) {
+            TableColumn<TableViewTest, StringProperty> column;
+            if(i%2==0){
+                column = new TableColumn<>(transitions[i/2]);
+                int finalI = i;
+                cellValueFactory(column,finalI);
+                fillWithCombobox(column,stateOptions);
+            }
+            else {
+                column = new TableColumn<>("Value");
+                int finalI = i;
+                cellValueFactory(column,finalI);
+                fillWithCombobox(column,outputsOptions);
+            }
+            MealyAutomatonTableview.getColumns().add(column);
+        }
+    }
+
+    private void cellValueFactory(TableColumn<TableViewTest, StringProperty> column,int a){
+        column.setCellValueFactory(z ->{
+            StringProperty value = z.getValue().optionProperty(a);
+            return Bindings.createObjectBinding(() -> value);
+        } );
     }
 
     private void fillWithCombobox(TableColumn<TableViewTest, StringProperty> column, ObservableList cbBox){
@@ -206,6 +246,14 @@ public class AutomatonController implements Initializable {
         for (int i = 0; i < numberOfRows; i++) {
             automatonTableview.getItems().add(
                     new TableViewTest(numberOfColumns+1)
+            );
+        }
+    }
+
+    private void insertMealyValues(){
+        for (int i = 0; i < numberOfRows; i++) {
+            MealyAutomatonTableview.getItems().add(
+                    new TableViewTest(numberOfColumns*2)
             );
         }
     }
