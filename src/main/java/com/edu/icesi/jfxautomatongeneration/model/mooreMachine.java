@@ -15,6 +15,7 @@ public class mooreMachine {
         int n=states.size();
         int m=states.get(0).size();
         return states.get(0);
+
     }
 
     //Recorrer matriz, seleccionar nodos conectados a la raiz
