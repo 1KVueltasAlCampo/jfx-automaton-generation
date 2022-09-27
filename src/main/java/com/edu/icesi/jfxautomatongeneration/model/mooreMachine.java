@@ -2,11 +2,11 @@ package com.edu.icesi.jfxautomatongeneration.model;
 
 import java.util.ArrayList;
 
-public class mooreMachine {
+public class MooreMachine {
     public ArrayList<ArrayList<Integer>> states;
     public ArrayList<Integer> checkList;
 
-    public mooreMachine(ArrayList<ArrayList<Integer>> states){
+    public MooreMachine(ArrayList<ArrayList<Integer>> states){
         this.states=states;
 
     }
