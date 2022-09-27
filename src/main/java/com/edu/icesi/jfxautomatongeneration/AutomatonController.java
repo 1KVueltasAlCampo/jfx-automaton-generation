@@ -45,7 +45,7 @@ public class AutomatonController implements Initializable {
     private ObservableList<String> stateOptions;
     private ObservableList<String> outputsOptions;
     private ArrayList<String> states = new ArrayList<>();
-    private ArrayList<ArrayList<String>> initialTableMoore;
+    private ArrayList<ArrayList<Integer>> initialTableMoore;
 
     @FXML
     protected void startApplication() {
@@ -96,12 +96,14 @@ public class AutomatonController implements Initializable {
         initialTableMoore = new ArrayList<>();
         ObservableList<TableViewTest> list = automatonTableview.getItems();
         for(int i=0;i<numberOfRows;i++){
-            ArrayList<String> values = new ArrayList<>();
-            for(int j=0;j<numberOfColumns+1;j++){
-                values.add(list.get(i).getOption(j));
+            ArrayList<Integer> values = new ArrayList<>();
+            for(int j=0;j<numberOfColumns;j++){
+                values.add(Integer.parseInt(list.get(i).getOption(j).substring(1)));
             }
+            values.add(Integer.parseInt(list.get(i).getOption(numberOfColumns)));
             initialTableMoore.add(values);
         }
+        checkArray();
     }
 
     private void checkArray(){
