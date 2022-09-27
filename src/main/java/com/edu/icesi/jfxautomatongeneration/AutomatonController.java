@@ -1,5 +1,6 @@
 package com.edu.icesi.jfxautomatongeneration;
 
+import com.edu.icesi.jfxautomatongeneration.model.MooreMachine;
 import com.edu.icesi.jfxautomatongeneration.model.TableViewTest;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.StringProperty;
@@ -48,6 +49,7 @@ public class AutomatonController implements Initializable {
     private ObservableList<String> outputsOptions;
     private ArrayList<String> states = new ArrayList<>();
     private ArrayList<ArrayList<Integer>> initialTableMoore;
+    private MooreMachine mooreMachine;
 
 
     @FXML
@@ -107,6 +109,8 @@ public class AutomatonController implements Initializable {
             initialTableMoore.add(values);
         }
         checkArray();
+        mooreMachine = new MooreMachine(initialTableMoore);
+        
     }
 
     @FXML
@@ -129,8 +133,8 @@ public class AutomatonController implements Initializable {
         numberOfColumns = transitions.length;
         outputs = outputsTxtField.getText().split(",");
         initializeOptions();
-        insertColumns();
-        insertValues();
+        insertMooreColumns();
+        insertMooreValues();
         launchFXML("automaton-table-view.fxml","Automaton table");
     }
 
@@ -141,11 +145,11 @@ public class AutomatonController implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        insertColumns();
-        insertValues();
+        insertMooreColumns();
+        insertMooreValues();
     }
 
-    private void insertColumns(){
+    private void insertMooreColumns(){
 
         for (int i = 0; i < numberOfColumns; i++) {
             TableColumn<TableViewTest, StringProperty> column = new TableColumn<>(transitions[i]);
@@ -187,7 +191,7 @@ public class AutomatonController implements Initializable {
         });
     }
 
-    private void insertValues(){
+    private void insertMooreValues(){
         for (int i = 0; i < numberOfRows; i++) {
             automatonTableview.getItems().add(
                     new TableViewTest(numberOfColumns+1)
