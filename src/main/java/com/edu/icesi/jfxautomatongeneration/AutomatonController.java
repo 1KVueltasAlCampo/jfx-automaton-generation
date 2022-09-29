@@ -161,16 +161,7 @@ public class AutomatonController implements Initializable {
     }
 
     private void insertMooreColumns(){
-        counter = -2;
-        TableColumn statesColumn = new TableColumn("State");
-        statesColumn.setCellFactory(c ->{
-            TableCell de = new TableCell<>();
-            if(counter<numberOfRows){
-                de.setText("Q"+counter);
-            }
-            counter++;
-            return de;
-        });
+        TableColumn statesColumn = insertStatesColumn();
         automatonTableview.getColumns().add(statesColumn);
         for (int i = 0; i < numberOfColumns; i++) {
             TableColumn<TableViewTest, StringProperty> column = new TableColumn<>(transitions[i]);
@@ -187,16 +178,7 @@ public class AutomatonController implements Initializable {
     }
 
     private void insertMealyColumns(){
-        counter = -2;
-        TableColumn statesColumn = new TableColumn("State");
-        statesColumn.setCellFactory(c ->{
-            TableCell de = new TableCell<>();
-            if(counter<numberOfRows){
-                de.setText("Q"+counter);
-            }
-            counter++;
-            return de;
-        });
+        TableColumn statesColumn = insertStatesColumn();
         MealyAutomatonTableview.getColumns().add(statesColumn);
 
         for (int i = 0; i < numberOfColumns*2; i++) {
@@ -215,6 +197,20 @@ public class AutomatonController implements Initializable {
             }
             MealyAutomatonTableview.getColumns().add(column);
         }
+    }
+
+    private TableColumn insertStatesColumn() {
+        counter = -2;
+        TableColumn statesColumn = new TableColumn("State");
+        statesColumn.setCellFactory(c ->{
+            TableCell de = new TableCell<>();
+            if(counter<numberOfRows){
+                de.setText("Q"+counter);
+            }
+            counter++;
+            return de;
+        });
+        return statesColumn;
     }
 
     private void cellValueFactory(TableColumn<TableViewTest, StringProperty> column,int a){
