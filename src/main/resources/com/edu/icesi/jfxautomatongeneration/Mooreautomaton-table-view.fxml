@@ -9,10 +9,10 @@
    <items>
       <SplitPane prefHeight="200.0" prefWidth="200.0">
          <items>
-            <TableView fx:id="automatonTableview" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="394.0" prefWidth="530.0" />
+            <TableView fx:id="mooreAutomatonTableview" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="394.0" prefWidth="530.0" />
          </items>
       </SplitPane>
-      <Button mnemonicParsing="false" onAction="#generateInitialAutomaton" prefHeight="27.0" prefWidth="94.0" text="Generate">
+      <Button mnemonicParsing="false" onAction="#generateInitialMooreAutomaton" prefHeight="27.0" prefWidth="94.0" text="Generate">
          <font>
             <Font size="11.0" />
          </font>

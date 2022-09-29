@@ -25,7 +25,7 @@ import java.util.ResourceBundle;
 public class AutomatonController implements Initializable {
 
     @FXML
-    private TableView<TableViewTest> automatonTableview = new TableView<>();
+    private TableView<TableViewTest> mooreAutomatonTableview = new TableView<>();
     @FXML
     private TextField numberOfStatesTxtField;
 
@@ -97,9 +97,9 @@ public class AutomatonController implements Initializable {
     }
 
     @FXML
-    void generateInitialAutomaton(ActionEvent event) {
+    void generateInitialMooreAutomaton(ActionEvent event) {
         initialTableMoore = new ArrayList<>();
-        ObservableList<TableViewTest> list = automatonTableview.getItems();
+        ObservableList<TableViewTest> list = mooreAutomatonTableview.getItems();
         for(int i=0;i<numberOfRows;i++){
             ArrayList<Integer> values = new ArrayList<>();
             for(int j=0;j<numberOfColumns;j++){
@@ -132,7 +132,7 @@ public class AutomatonController implements Initializable {
         tableGenericInitialize();
         insertMooreColumns();
         insertMooreValues();
-        launchFXML("automaton-table-view.fxml","Automaton table");
+        launchFXML("Mooreautomaton-table-view.fxml","Automaton table");
     }
     @FXML
     protected void buildMealyBtn() {
@@ -162,19 +162,19 @@ public class AutomatonController implements Initializable {
 
     private void insertMooreColumns(){
         TableColumn statesColumn = insertStatesColumn();
-        automatonTableview.getColumns().add(statesColumn);
+        mooreAutomatonTableview.getColumns().add(statesColumn);
         for (int i = 0; i < numberOfColumns; i++) {
             TableColumn<TableViewTest, StringProperty> column = new TableColumn<>(transitions[i]);
             int finalI = i;
             cellValueFactory(column,finalI);
             fillWithCombobox(column,stateOptions);
-            automatonTableview.getColumns().add(column);
+            mooreAutomatonTableview.getColumns().add(column);
         }
         TableColumn<TableViewTest, StringProperty> outputColumn = new TableColumn<>("Output");
         cellValueFactory(outputColumn,numberOfColumns);
         fillWithCombobox(outputColumn,outputsOptions);
 
-        automatonTableview.getColumns().add(outputColumn);
+        mooreAutomatonTableview.getColumns().add(outputColumn);
     }
 
     private void insertMealyColumns(){
@@ -240,7 +240,7 @@ public class AutomatonController implements Initializable {
 
     private void insertMooreValues(){
         for (int i = 0; i < numberOfRows; i++) {
-            automatonTableview.getItems().add(
+            mooreAutomatonTableview.getItems().add(
                     new TableViewTest(numberOfColumns+1)
             );
         }
