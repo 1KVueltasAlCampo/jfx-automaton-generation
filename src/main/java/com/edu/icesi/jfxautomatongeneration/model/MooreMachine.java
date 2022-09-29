@@ -6,11 +6,13 @@ import java.util.Collections;
 public class MooreMachine {
     public ArrayList<ArrayList<Integer>> states;
     public ArrayList<Integer> checkList;
-    public ArrayList<Integer> outPuts;
+    public ArrayList<ArrayList<Integer>> outPuts;
     private int tablesEnd;
 
+    public ArrayList<ArrayList<Integer>> partitioning = new ArrayList<>();
 
-    public MooreMachine(ArrayList<ArrayList<Integer>> states, ArrayList<Integer> outPuts){
+
+    public MooreMachine(ArrayList<ArrayList<Integer>> states, ArrayList<ArrayList<Integer>> outPuts){
         this.states=states;
         checkList=new ArrayList<>();
         this.outPuts=outPuts;
@@ -20,12 +22,18 @@ public class MooreMachine {
 
     }
 
+    public void createInitialPartition(){
+        //for(int i=0;i<)
+    }
+
+
     public void deleteStatesRootUnconnected(){
         Collections.sort(checkList);
         for(int i=0;i<states.size();i++){
             if(!searchState(i)){
                 System.out.println("Removed "+i);
                 states.remove(i);
+                outPuts.remove(i);
             }
         }
     }
@@ -42,25 +50,26 @@ public class MooreMachine {
     private void isConnectedToRoot(int c, int r){
         if((c+1)<tablesEnd){ //sus
             int index=states.get(r).get(c+1); //sus
-            System.out.println(index+"a probar");
-            System.out.println("Columna :"+c+" Fila :"+r);
+            //System.out.println(index+"a probar");
+            //System.out.println("Columna :"+c+" Fila :"+r);
             if (!searchState(index)){
-                System.out.println("C :"+c+" F :"+r);
-                System.out.println("No está: "+index);
+                //System.out.println("C :"+c+" F :"+r);
+                //System.out.println("No está: "+index);
                 checkList.add(index);
                 isConnectedToRoot(0,index);
                 isConnectedToRoot(c+1,r);
             }
             else {
-                System.out.println("Ya está: " + index);
+                //System.out.println("Ya está: " + index);
                 isConnectedToRoot(c+1, r);
-                System.out.println("MUERTE");
-                System.out.println("C :"+c+" F :"+r);
+                //System.out.println("MUERTE");
+                //System.out.println("C :"+c+" F :"+r);
             }
         }
-        else{
+        /*else{
             System.out.println("Se murio "+c+""+r);
         }
+         */
     }
     private boolean searchState(int state){
         for(int i=0;i<checkList.size();i++){

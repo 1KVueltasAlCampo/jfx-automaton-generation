@@ -49,8 +49,7 @@ public class AutomatonController implements Initializable {
     private ObservableList<String> outputsOptions;
     private ArrayList<String> states = new ArrayList<>();
     private ArrayList<ArrayList<Integer>> statesMatrix= new ArrayList<>();
-    private ArrayList<Integer> mooreOutputsMatrix=new ArrayList<>();
-    private ArrayList<ArrayList<Integer>> mealyOutputsMatrix=new ArrayList<>();
+    private ArrayList<ArrayList<Integer>> outputsMatrix=new ArrayList<>();
     private MooreMachine mooreMachine;
 
 
@@ -102,18 +101,21 @@ public class AutomatonController implements Initializable {
     void generateInitialMooreAutomaton(ActionEvent event) {
         ObservableList<TableViewTest> list = mooreAutomatonTableview.getItems();
         statesMatrix.clear();
-        mooreOutputsMatrix.clear();
+        outputsMatrix.clear();
         for(int i=0;i<numberOfStates;i++){
             ArrayList<Integer> statesValues = new ArrayList<>();
+            ArrayList<Integer> outputValues = new ArrayList<>();
             statesValues.add(i);
+            outputValues.add(i);
             for(int j=0;j<numberOfColumns;j++){
                 statesValues.add(Integer.parseInt(list.get(i).getOption(j).substring(1)));
             }
-            mooreOutputsMatrix.add(Integer.parseInt(list.get(i).getOption(numberOfColumns)));
+            outputValues.add(Integer.parseInt(list.get(i).getOption(numberOfColumns)));
+            outputsMatrix.add(outputValues);
             statesMatrix.add(statesValues);
         }
         checkArray(statesMatrix);
-        mooreMachine = new MooreMachine(statesMatrix,mooreOutputsMatrix);
+        mooreMachine = new MooreMachine(statesMatrix,outputsMatrix);
         mooreMachine.deleteStatesRootUnconnected();
 
     }
@@ -122,7 +124,7 @@ public class AutomatonController implements Initializable {
     void generateInitialAutomatonMealy(ActionEvent event) {
         ObservableList<TableViewTest> mealyList = MealyAutomatonTableview.getItems();
         statesMatrix.clear();
-        mealyOutputsMatrix.clear();
+        outputsMatrix.clear();
         for(int i=0;i<numberOfStates;i++){
             ArrayList<Integer> statesValues = new ArrayList<>();
             ArrayList<Integer> outputValues = new ArrayList<>();
@@ -137,7 +139,7 @@ public class AutomatonController implements Initializable {
                 }
             }
             statesMatrix.add(statesValues);
-            mealyOutputsMatrix.add(outputValues);
+            outputsMatrix.add(outputValues);
         }
         checkArray(statesMatrix);
         // Implement machine
