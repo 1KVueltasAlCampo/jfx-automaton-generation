@@ -108,7 +108,7 @@ public class AutomatonController implements Initializable {
             values.add(Integer.parseInt(list.get(i).getOption(numberOfColumns)));
             initialTableMoore.add(values);
         }
-        checkArray();
+        //checkArray();
         mooreMachine = new MooreMachine(initialTableMoore);
 
     }
