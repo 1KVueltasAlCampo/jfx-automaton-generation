@@ -105,6 +105,7 @@ public class AutomatonController implements Initializable {
         mooreOutputsMatrix.clear();
         for(int i=0;i<numberOfStates;i++){
             ArrayList<Integer> statesValues = new ArrayList<>();
+            statesValues.add(i);
             for(int j=0;j<numberOfColumns;j++){
                 statesValues.add(Integer.parseInt(list.get(i).getOption(j).substring(1)));
             }
@@ -112,7 +113,8 @@ public class AutomatonController implements Initializable {
             statesMatrix.add(statesValues);
         }
         checkArray(statesMatrix);
-        //mooreMachine = new MooreMachine(statesMatrix,mooreOutputsMatrix);
+        mooreMachine = new MooreMachine(statesMatrix,mooreOutputsMatrix);
+        mooreMachine.deleteStatesRootUnconnected();
 
     }
 
@@ -124,6 +126,8 @@ public class AutomatonController implements Initializable {
         for(int i=0;i<numberOfStates;i++){
             ArrayList<Integer> statesValues = new ArrayList<>();
             ArrayList<Integer> outputValues = new ArrayList<>();
+            statesValues.add(i);
+            outputValues.add(i);
             for(int j=0;j<numberOfColumns*2;j++){
                 if(j%2==0){
                     statesValues.add(Integer.parseInt(mealyList.get(i).getOption(j).substring(1)));
