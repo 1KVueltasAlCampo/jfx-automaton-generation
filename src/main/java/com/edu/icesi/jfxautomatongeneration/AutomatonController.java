@@ -39,7 +39,7 @@ public class AutomatonController implements Initializable {
     private TableView<TableViewTest> MealyAutomatonTableview = new TableView<>();
 
 
-    private int numberOfRows;
+    private int numberOfStates;
     private int numberOfColumns;
     private String[] transitions;
     private String[] outputs;
@@ -48,7 +48,9 @@ public class AutomatonController implements Initializable {
     private ObservableList<String> stateOptions;
     private ObservableList<String> outputsOptions;
     private ArrayList<String> states = new ArrayList<>();
-    private ArrayList<ArrayList<Integer>> initialTableMoore;
+    private ArrayList<ArrayList<Integer>> statesMatrix= new ArrayList<>();
+    private ArrayList<Integer> mooreOutputsMatrix=new ArrayList<>();
+    private ArrayList<ArrayList<Integer>> mealyOutputsMatrix=new ArrayList<>();
     private MooreMachine mooreMachine;
 
 
@@ -59,7 +61,7 @@ public class AutomatonController implements Initializable {
 
     private void initializeOptions(){
         states.clear();
-        for(int i=0;i<numberOfRows;i++){
+        for(int i=0;i<numberOfStates;i++){
             states.add("Q"+i);
         }
         stateOptions = FXCollections.observableArrayList(states);
@@ -98,30 +100,51 @@ public class AutomatonController implements Initializable {
 
     @FXML
     void generateInitialMooreAutomaton(ActionEvent event) {
-        initialTableMoore = new ArrayList<>();
         ObservableList<TableViewTest> list = mooreAutomatonTableview.getItems();
-        for(int i=0;i<numberOfRows;i++){
-            ArrayList<Integer> values = new ArrayList<>();
+        statesMatrix.clear();
+        mooreOutputsMatrix.clear();
+        for(int i=0;i<numberOfStates;i++){
+            ArrayList<Integer> statesValues = new ArrayList<>();
             for(int j=0;j<numberOfColumns;j++){
-                values.add(Integer.parseInt(list.get(i).getOption(j).substring(1)));
+                statesValues.add(Integer.parseInt(list.get(i).getOption(j).substring(1)));
             }
-            values.add(Integer.parseInt(list.get(i).getOption(numberOfColumns)));
-            initialTableMoore.add(values);
+            mooreOutputsMatrix.add(Integer.parseInt(list.get(i).getOption(numberOfColumns)));
+            statesMatrix.add(statesValues);
         }
-        //checkArray();
-        mooreMachine = new MooreMachine(initialTableMoore);
+        checkArray(statesMatrix);
+        //mooreMachine = new MooreMachine(statesMatrix,mooreOutputsMatrix);
 
     }
 
     @FXML
     void generateInitialAutomatonMealy(ActionEvent event) {
-
+        ObservableList<TableViewTest> mealyList = MealyAutomatonTableview.getItems();
+        statesMatrix.clear();
+        mealyOutputsMatrix.clear();
+        for(int i=0;i<numberOfStates;i++){
+            ArrayList<Integer> statesValues = new ArrayList<>();
+            ArrayList<Integer> outputValues = new ArrayList<>();
+            for(int j=0;j<numberOfColumns*2;j++){
+                if(j%2==0){
+                    statesValues.add(Integer.parseInt(mealyList.get(i).getOption(j).substring(1)));
+                }
+                else{
+                    outputValues.add(Integer.parseInt(mealyList.get(i).getOption(j)));
+                }
+            }
+            statesMatrix.add(statesValues);
+            mealyOutputsMatrix.add(outputValues);
+        }
+        checkArray(statesMatrix);
+        // Implement machine
     }
 
-    private void checkArray(){
-        for(int i=0;i<numberOfRows;i++){
-            for(int j=0;j<numberOfColumns+1;j++){
-                System.out.println(initialTableMoore.get(i).get(j));
+
+
+    private void checkArray(ArrayList<ArrayList<Integer>> arrayList){
+        for(int i=0;i<arrayList.size();i++){
+            for(int j=0;j<arrayList.get(0).size();j++){
+                System.out.println(arrayList.get(i).get(j));
             }
             System.out.println();
         }
@@ -143,7 +166,7 @@ public class AutomatonController implements Initializable {
     }
 
     private void tableGenericInitialize(){
-        numberOfRows = Integer.parseInt(numberOfStatesTxtField.getText());
+        numberOfStates = Integer.parseInt(numberOfStatesTxtField.getText());
         transitions = transitionElementsTxtField.getText().split(",");
         numberOfColumns = transitions.length;
         outputs = outputsTxtField.getText().split(",");
@@ -204,7 +227,7 @@ public class AutomatonController implements Initializable {
         TableColumn statesColumn = new TableColumn("State");
         statesColumn.setCellFactory(c ->{
             TableCell de = new TableCell<>();
-            if(counter<numberOfRows){
+            if(counter<numberOfStates){
                 de.setText("Q"+counter);
             }
             counter++;
@@ -239,7 +262,7 @@ public class AutomatonController implements Initializable {
     }
 
     private void insertMooreValues(){
-        for (int i = 0; i < numberOfRows; i++) {
+        for (int i = 0; i < numberOfStates; i++) {
             mooreAutomatonTableview.getItems().add(
                     new TableViewTest(numberOfColumns+1)
             );
@@ -247,7 +270,7 @@ public class AutomatonController implements Initializable {
     }
 
     private void insertMealyValues(){
-        for (int i = 0; i < numberOfRows; i++) {
+        for (int i = 0; i < numberOfStates; i++) {
             MealyAutomatonTableview.getItems().add(
                     new TableViewTest(numberOfColumns*2)
             );
