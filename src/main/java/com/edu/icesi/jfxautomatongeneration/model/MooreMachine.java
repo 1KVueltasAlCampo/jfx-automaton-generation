@@ -8,6 +8,7 @@ public class MooreMachine {
     public ArrayList<Integer> checkList;
     public ArrayList<ArrayList<Integer>> outPuts;
     private int tablesEnd;
+    private ArrayList<String> combinations = new ArrayList<>();
 
     public ArrayList<ArrayList<Integer>> partitioning = new ArrayList<>();
 
@@ -18,12 +19,53 @@ public class MooreMachine {
         this.outPuts=outPuts;
         checkList.add(0);
         tablesEnd=states.get(0).size();
-        isConnectedToRoot();
+        machineProcess();
 
     }
 
+    public void machineProcess(){
+        isConnectedToRoot();
+        deleteStatesRootUnconnected();
+        createInitialPartition();
+    }
+
     public void createInitialPartition(){
-        //for(int i=0;i<)
+        for(int i=0;i<outPuts.size();i++){
+            String combination = "";
+            for(int j=1;j<outPuts.get(i).size();j++){
+                combination += outPuts.get(i).get(j)+"";
+            }
+            int index = isInCombinations(combinations,combination);
+            if(index!=-1){
+                partitioning.get(index).add(outPuts.get(i).get(0));
+            }
+            else{
+                combinations.add(combination);
+                ArrayList<Integer> newCombination = new ArrayList<>();
+                newCombination.add(outPuts.get(i).get(0));
+                partitioning.add(newCombination);
+            }
+        }
+        showPartitioning();
+    }
+
+    private void showPartitioning(){
+        for(int i=0;i<partitioning.size();i++){
+            System.out.println("Combination: "+combinations.get(i));
+            System.out.println("Elements");
+            for (int j=0;j<partitioning.get(i).size();j++){
+                System.out.println(partitioning.get(i).get(j));
+            }
+        }
+    }
+
+    private int isInCombinations(ArrayList<String> combinations,String combination){
+        for(int i=0;i<combinations.size();i++){
+            if(combinations.get(i).equals(combination)){
+                return i;
+            }
+        }
+        return -1;
     }
 
 

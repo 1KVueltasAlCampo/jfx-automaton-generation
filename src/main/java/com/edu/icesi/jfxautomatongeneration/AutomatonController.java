@@ -116,7 +116,6 @@ public class AutomatonController implements Initializable {
         }
         checkArray(statesMatrix);
         mooreMachine = new MooreMachine(statesMatrix,outputsMatrix);
-        mooreMachine.deleteStatesRootUnconnected();
 
     }
 
