@@ -4,13 +4,14 @@ import java.util.ArrayList;
 import java.util.Collections;
 
 public class MooreMachine {
-    public ArrayList<ArrayList<Integer>> states;
+    public ArrayList<ArrayList<Integer>> states; // Q0 -> Q1 (0)  Q0(1)
     public ArrayList<Integer> checkList;
     public ArrayList<ArrayList<Integer>> outPuts;
     private int tablesEnd;
     private ArrayList<String> combinations = new ArrayList<>();
+    private int[] blockOfTheState;
 
-    public ArrayList<ArrayList<Integer>> partitioning = new ArrayList<>();
+    public ArrayList<ArrayList<Integer>> partitioning = new ArrayList<>(); //{Q0,Q3} { Q1,Q4,Q6}
     public ArrayList<ArrayList<Integer>> fPartitioning = new ArrayList<>();
 
 
@@ -31,6 +32,7 @@ public class MooreMachine {
     }
 
     public void createInitialPartition() {
+        blockOfTheState = new int[states.size()];
         for (int i = 0; i < outPuts.size(); i++) {
             String combination = "";
             for (int j = 1; j < outPuts.get(i).size(); j++) {
@@ -38,12 +40,16 @@ public class MooreMachine {
             }
             int index = isInCombinations(combinations, combination);
             if (index != -1) {
+                //System.out.println("Q"+outPuts.get(i).get(0)+" is in "+index);
+                blockOfTheState[outPuts.get(i).get(0)] = index;
                 partitioning.get(index).add(outPuts.get(i).get(0));
             } else {
-                combinations.add(combination);
+                combinations.add(combination); //Se agrega la nueva combinacion. Ej: 1, 10, 01, etc
                 ArrayList<Integer> newCombination = new ArrayList<>();
                 newCombination.add(outPuts.get(i).get(0));
-                partitioning.add(newCombination);
+                partitioning.add(newCombination); //Se añade un estado a la particion. EJ: Q1, Q0
+                //System.out.println("Q"+outPuts.get(i).get(0)+" is in "+(partitioning.size()-1));
+                blockOfTheState[outPuts.get(i).get(0)] = partitioning.size()-1;
             }
         }
         showPartitioning();
@@ -52,12 +58,14 @@ public class MooreMachine {
     private void showPartitioning() {
         for (int i = 0; i < partitioning.size(); i++) {
             System.out.println("Combination: " + combinations.get(i));
-            System.out.println("Elements" + combinations.get(i).length());
+            System.out.println("Elements " + partitioning.get(i).size());
             for (int j = 0; j < partitioning.get(i).size(); j++) {
                 System.out.println(partitioning.get(i).get(j));
             }
         }
     }
+
+
 
     private int isInCombinations(ArrayList<String> combinations, String combination) {
         for (int i = 0; i < combinations.size(); i++) {
@@ -70,14 +78,15 @@ public class MooreMachine {
 
 
     public void deleteStatesRootUnconnected() {
+        ArrayList<ArrayList<Integer>> newStates = new ArrayList<>();
+        ArrayList<ArrayList<Integer>> newOutputs = new ArrayList<>();
         Collections.sort(checkList);
-        for (int i = 0; i < states.size(); i++) {
-            if (!searchState(i)) {
-                System.out.println("Removed " + i);
-                states.remove(i);
-                outPuts.remove(i);
-            }
+        for (int i = 0; i < checkList.size(); i++) {
+            newStates.add(states.get(checkList.get(i)));
+            newOutputs.add(outPuts.get(checkList.get(i)));
         }
+        states=newStates;
+        outPuts=newOutputs;
     }
 
 
@@ -130,13 +139,15 @@ public class MooreMachine {
         }
     }
 
-    public ArrayList<ArrayList<Integer>> makingPartition() {
+    public ArrayList<ArrayList<Integer>> makingPartition() { //Creates the partition for each step
         ArrayList<ArrayList<Integer>> newPartition=new ArrayList<>();
         for (int i = 0; i < partitioning.size(); i++) {
             setNewRows(newPartition, partitionVerifier(partitioning.get(i)));
         }
         return newPartition;
     }
+
+    //Creates an arraylist with the new partition
     public void setNewRows(ArrayList<ArrayList<Integer>> original, ArrayList<ArrayList<Integer>> additional){
         for(int i=0;i<additional.size();i++){
             original.add(additional.get(i));
@@ -149,12 +160,12 @@ public class MooreMachine {
         int rowsCount=0;
         for (int i=0;i<set.size();i++){
             int state=set.get(i);
-            if(!isGrouped(alreadyGrouped,state)) {
+            if(!isGrouped(alreadyGrouped,state)) { //The states are not in the same set
                 //VERIFICAR OUTPUTS DE STATE
-                for (int j = 1; j < set.size(); j++) {
+                for (int j = 0; j < set.size(); j++) {
                     if (verifyOutputs(state, set.get(j))) {
-                        if (!containsTheState(newRows, state)) {
-                            newRows.get(rowsCount).add(state);
+                        if (!containsTheState(newRows, state)) { //The partition doesn't have the state
+                            newRows.get(rowsCount).add(state); //Pretends to add the element to the new partition
                             alreadyGrouped.add(state);
                         }
                         newRows.get(rowsCount).add(set.get(j));
@@ -170,8 +181,9 @@ public class MooreMachine {
         return newRows;
     }
 
+
     public boolean verifyOutputs(int stateToProve, int anotherState){
-        //El valor cero de outputs al parecer es su indice
+        //El valor cero de outputs al parecer es su indice //Lo es xd
         for (int i=1;i<outPuts.size();i++){
             int testStatePos=statePartitionPos(outPuts.get(stateToProve).get(i));
             int anotherStatePos=statePartitionPos(outPuts.get(anotherState).get(i));
@@ -217,4 +229,8 @@ public class MooreMachine {
     public ArrayList<String> subGrouping(ArrayList<ArrayList<String>> states){
         return states.get(0);
     }
+
+
+
+
 }
