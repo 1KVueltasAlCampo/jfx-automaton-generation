@@ -29,6 +29,19 @@ public class MooreMachine {
         isConnectedToRoot();
         deleteStatesRootUnconnected();
         createInitialPartition();
+        partitioningProcess();
+        showPartitioning();
+    }
+
+    private void partitioningProcess(){
+        int pastSize;
+        int currentSize;
+        do{
+            pastSize=partitioning.size();
+            createPartitioning();
+            currentSize=partitioning.size();
+        }
+        while(currentSize!=pastSize);
     }
 
     public void createInitialPartition() {
@@ -52,12 +65,57 @@ public class MooreMachine {
                 blockOfTheState[outPuts.get(i).get(0)] = partitioning.size()-1;
             }
         }
-        showPartitioning();
+    }
+
+    public void createPartitioning(){
+        //Validation to stop
+        for(int i=0;i<partitioning.size();i++){
+            ArrayList<Integer> newBlock = new ArrayList<>();
+            System.out.println("Size = "+partitioning.get(i).size());
+                for(int j=1;j<partitioning.get(i).size();j++){
+                    int differentState = areInSameBlock(partitioning.get(i).get(0),partitioning.get(i).get(j));
+                    if( differentState!= -1){
+                        newBlock.add(partitioning.get(i).get(j));
+                        partitioning.get(i).remove(j);
+                        blockOfTheState[differentState] = partitioning.size();
+                        j--;
+                    }
+                }
+                System.out.println("Fin del ciclo "+"Size = "+partitioning.get(i).size());
+                if(newBlock.size()!=0){
+                    partitioning.add(newBlock);
+                }
+        }
+    }
+
+    private int areInSameBlock(int firstState,int comparableState){
+        ArrayList<Integer> firstStateSet = findStateSet(firstState);
+        ArrayList<Integer> comparableStateSet = findStateSet(comparableState);
+        if(firstStateSet!=null && comparableStateSet != null){
+            for(int i=1;i<firstStateSet.size();i++){
+                System.out.println(firstStateSet.get(i)+":"+blockOfTheState[firstStateSet.get(i)]+" = "+comparableStateSet.get(i)+": "+blockOfTheState[comparableStateSet.get(i)]);
+                if(blockOfTheState[firstStateSet.get(i)]!=blockOfTheState[comparableStateSet.get(i)]){
+                    return comparableState;
+                }
+            }
+        }
+        //System.out.println("Null "+firstState+" or "+comparableState);
+        return -1;
+    }
+
+    private ArrayList<Integer> findStateSet(int qState){
+        for(int i=0;i<states.size();i++){
+            if(qState==states.get(i).get(0)){
+                ArrayList<Integer> stateWithoutIndex = states.get(i);
+                return stateWithoutIndex;
+            }
+        }
+        System.out.println("Null for "+qState);
+        return null;
     }
 
     private void showPartitioning() {
         for (int i = 0; i < partitioning.size(); i++) {
-            System.out.println("Combination: " + combinations.get(i));
             System.out.println("Elements " + partitioning.get(i).size());
             for (int j = 0; j < partitioning.get(i).size(); j++) {
                 System.out.println(partitioning.get(i).get(j));
