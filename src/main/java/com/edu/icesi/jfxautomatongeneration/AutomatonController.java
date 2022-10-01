@@ -1,6 +1,6 @@
 package com.edu.icesi.jfxautomatongeneration;
 
-import com.edu.icesi.jfxautomatongeneration.model.MooreMachine;
+import com.edu.icesi.jfxautomatongeneration.model.StateMachine;
 import com.edu.icesi.jfxautomatongeneration.model.TableViewTest;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.StringProperty;
@@ -50,7 +50,7 @@ public class AutomatonController implements Initializable {
     private ArrayList<String> states = new ArrayList<>();
     private ArrayList<ArrayList<Integer>> statesMatrix= new ArrayList<>();
     private ArrayList<ArrayList<Integer>> outputsMatrix=new ArrayList<>();
-    private MooreMachine mooreMachine;
+    private StateMachine stateMachine;
 
 
     @FXML
@@ -115,7 +115,7 @@ public class AutomatonController implements Initializable {
             statesMatrix.add(statesValues);
         }
         checkArray(statesMatrix);
-        mooreMachine = new MooreMachine(statesMatrix,outputsMatrix);
+        stateMachine = new StateMachine(statesMatrix,outputsMatrix);
 
     }
 
@@ -141,6 +141,7 @@ public class AutomatonController implements Initializable {
             outputsMatrix.add(outputValues);
         }
         checkArray(statesMatrix);
+        stateMachine = new StateMachine(statesMatrix,outputsMatrix);
         // Implement machine
     }
 

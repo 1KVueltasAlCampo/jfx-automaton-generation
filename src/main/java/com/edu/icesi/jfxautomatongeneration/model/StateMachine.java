@@ -3,7 +3,7 @@ package com.edu.icesi.jfxautomatongeneration.model;
 import java.util.ArrayList;
 import java.util.Collections;
 
-public class MooreMachine {
+public class StateMachine {
     public ArrayList<ArrayList<Integer>> states; // Q0 -> Q1 (0)  Q0(1)
     public ArrayList<Integer> checkList;
     public ArrayList<ArrayList<Integer>> outPuts;
@@ -15,7 +15,7 @@ public class MooreMachine {
     public ArrayList<ArrayList<Integer>> fPartitioning = new ArrayList<>();
 
 
-    public MooreMachine(ArrayList<ArrayList<Integer>> states, ArrayList<ArrayList<Integer>> outPuts) {
+    public StateMachine(ArrayList<ArrayList<Integer>> states, ArrayList<ArrayList<Integer>> outPuts) {
         this.states = states;
         checkList = new ArrayList<>();
         this.outPuts = outPuts;
@@ -188,107 +188,5 @@ public class MooreMachine {
         }
         return false;
     }
-
-
-    //Que pare cuando P=P+1,es sencillo solo que ando en otro mundo a esta hora.
-    public void finalPartition(){
-        while (partitioning!=makingPartition()){
-
-        }
-    }
-
-    public ArrayList<ArrayList<Integer>> makingPartition() { //Creates the partition for each step
-        ArrayList<ArrayList<Integer>> newPartition=new ArrayList<>();
-        for (int i = 0; i < partitioning.size(); i++) {
-            setNewRows(newPartition, partitionVerifier(partitioning.get(i)));
-        }
-        return newPartition;
-    }
-
-    //Creates an arraylist with the new partition
-    public void setNewRows(ArrayList<ArrayList<Integer>> original, ArrayList<ArrayList<Integer>> additional){
-        for(int i=0;i<additional.size();i++){
-            original.add(additional.get(i));
-        }
-    }
-
-    public ArrayList<ArrayList<Integer>> partitionVerifier(ArrayList<Integer> set){
-        ArrayList<ArrayList<Integer>> newRows=new ArrayList<>();
-        ArrayList<Integer> alreadyGrouped=new ArrayList<>();
-        int rowsCount=0;
-        for (int i=0;i<set.size();i++){
-            int state=set.get(i);
-            if(!isGrouped(alreadyGrouped,state)) { //The states are not in the same set
-                //VERIFICAR OUTPUTS DE STATE
-                for (int j = 0; j < set.size(); j++) {
-                    if (verifyOutputs(state, set.get(j))) {
-                        if (!containsTheState(newRows, state)) { //The partition doesn't have the state
-                            newRows.get(rowsCount).add(state); //Pretends to add the element to the new partition
-                            alreadyGrouped.add(state);
-                        }
-                        newRows.get(rowsCount).add(set.get(j));
-                        alreadyGrouped.add(set.get(j));
-                    }
-                }
-                if(!containsTheState(newRows,state)){
-                    newRows.get(rowsCount).add(state);
-                }
-                rowsCount++;
-            }
-        }
-        return newRows;
-    }
-
-
-    public boolean verifyOutputs(int stateToProve, int anotherState){
-        //El valor cero de outputs al parecer es su indice //Lo es xd
-        for (int i=1;i<outPuts.size();i++){
-            int testStatePos=statePartitionPos(outPuts.get(stateToProve).get(i));
-            int anotherStatePos=statePartitionPos(outPuts.get(anotherState).get(i));
-            if(!(testStatePos==anotherStatePos)){
-                return false;
-            }
-        }
-        return true;
-    }
-
-    public int statePartitionPos(int stateToProve){
-        int whereIsState=-1;
-        for (int i=0;i< partitioning.size();i++){
-            for (int j=0;j<partitioning.get(i).size();j++){
-                if(stateToProve==partitioning.get(i).get(j)){
-                    whereIsState=i;
-                }
-            }
-        }
-        return whereIsState;
-    }
-
-    public boolean containsTheState(ArrayList<ArrayList<Integer>> newRows, int stateToProve){
-        for (int i=0;i<newRows.size();i++){
-            for (int j=0;j<newRows.get(i).size();j++){
-                if(stateToProve==newRows.get(i).get(j)){
-                    return true;
-                }
-            }
-        }
-        return false;
-    }
-    public boolean isGrouped(ArrayList<Integer> aux, int test){
-        for (int i=0;i<aux.size();i++){
-            if(aux.get(i)==test){
-                return true;
-            }
-        }
-        return false;
-    }
-
-
-    public ArrayList<String> subGrouping(ArrayList<ArrayList<String>> states){
-        return states.get(0);
-    }
-
-
-
 
 }
