@@ -2,11 +2,15 @@ package com.edu.icesi.jfxautomatongeneration;
 
 import com.edu.icesi.jfxautomatongeneration.model.StateMachine;
 import com.edu.icesi.jfxautomatongeneration.model.TableViewTest;
+import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
+import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -16,16 +20,25 @@ import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import javafx.stage.WindowEvent;
 
+import javax.security.auth.callback.Callback;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.ResourceBundle;
 
 public class AutomatonController implements Initializable {
 
     @FXML
     private TableView<TableViewTest> mooreAutomatonTableview = new TableView<>();
+
+    @FXML
+    private TableView<ArrayList<ArrayList<Integer>>> newMooreMachineTableView= new TableView<>();
+    @FXML
+    private TableView<TableViewTest> newMealyMachineTableView= new TableView<>();
+
     @FXML
     private TextField numberOfStatesTxtField;
 
@@ -73,12 +86,16 @@ public class AutomatonController implements Initializable {
         Stage stage = new Stage();
         stage.setScene(scene);
         stage.setOnHidden(event -> {
-            //do all your processing here
         });
         stage.initModality(Modality.APPLICATION_MODAL);
         stage.setTitle(title);
         stage.setResizable(false);
         stage.show();
+        stage.setOnCloseRequest(new EventHandler<WindowEvent>() {
+            public void handle(WindowEvent we) {
+                Platform.exit();
+            }
+        });
     }
 
     private Parent loadFxml(String fxml) {
@@ -116,6 +133,8 @@ public class AutomatonController implements Initializable {
         }
         checkArray(statesMatrix);
         stateMachine = new StateMachine(statesMatrix,outputsMatrix);
+        insertNewMooreColumns();
+        launchFXML("NewMooreMachine.fxml","Moore machine");
 
     }
 
@@ -142,6 +161,7 @@ public class AutomatonController implements Initializable {
         }
         checkArray(statesMatrix);
         stateMachine = new StateMachine(statesMatrix,outputsMatrix);
+        launchFXML("NewMooreMachine.fxml","Moore machine");
         // Implement machine
     }
 
@@ -183,10 +203,30 @@ public class AutomatonController implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        insertMooreColumns();
-        insertMooreValues();
-        insertMealyColumns();
-        insertMealyValues();
+            insertMooreColumns();
+            insertMooreValues();
+            insertMealyColumns();
+            insertMealyValues();
+            insertNewMooreColumns();
+    }
+
+
+    private void fillWithCombobox(TableColumn<TableViewTest, StringProperty> column, ObservableList cbBox){
+
+        column.setCellFactory(col -> {
+            TableCell<TableViewTest, StringProperty> c = new TableCell<>();
+            final ComboBox<String> comboBox = new ComboBox<>(cbBox);
+            c.itemProperty().addListener((observable, oldValue, newValue) -> {
+                if (oldValue != null) {
+                    comboBox.valueProperty().unbindBidirectional(oldValue);
+                }
+                if (newValue != null) {
+                    comboBox.valueProperty().bindBidirectional(newValue);
+                }
+            });
+            c.graphicProperty().bind(Bindings.when(c.emptyProperty()).then((Node) null).otherwise(comboBox));
+            return c;
+        });
     }
 
     private void insertMooreColumns(){
@@ -204,6 +244,16 @@ public class AutomatonController implements Initializable {
         fillWithCombobox(outputColumn,outputsOptions);
 
         mooreAutomatonTableview.getColumns().add(outputColumn);
+    }
+
+    private void insertNewMooreColumns(){
+        TableColumn<ArrayList<ArrayList<Integer>>,String> valueColumn = new TableColumn();
+        valueColumn.setCellValueFactory((p)->{
+            ArrayList<ArrayList<Integer>> x = p.getValue();
+            return new SimpleStringProperty(x != null && x.size()>0 ? x.get(0).get(0)+"" : "<no name>");
+        });
+        newMooreMachineTableView.getColumns().add(valueColumn);
+        newMooreMachineTableView.getItems().addAll(statesMatrix);
     }
 
     private void insertMealyColumns(){
@@ -249,23 +299,7 @@ public class AutomatonController implements Initializable {
         } );
     }
 
-    private void fillWithCombobox(TableColumn<TableViewTest, StringProperty> column, ObservableList cbBox){
 
-        column.setCellFactory(col -> {
-            TableCell<TableViewTest, StringProperty> c = new TableCell<>();
-            final ComboBox<String> comboBox = new ComboBox<>(cbBox);
-            c.itemProperty().addListener((observable, oldValue, newValue) -> {
-                if (oldValue != null) {
-                    comboBox.valueProperty().unbindBidirectional(oldValue);
-                }
-                if (newValue != null) {
-                    comboBox.valueProperty().bindBidirectional(newValue);
-                }
-            });
-            c.graphicProperty().bind(Bindings.when(c.emptyProperty()).then((Node) null).otherwise(comboBox));
-            return c;
-        });
-    }
 
     private void insertMooreValues(){
         for (int i = 0; i < numberOfStates; i++) {
