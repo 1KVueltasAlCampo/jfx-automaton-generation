@@ -33,6 +33,32 @@ public class StateMachine {
         showPartitioning();
     }
 
+    public String[][] getMooreFinalMachine(){
+        String[][] mooreFinalMachine = new String[partitioning.size()][states.size()+1];
+        for(int i=0;i<partitioning.size();i++){
+            mooreFinalMachine[i] = getStateRow(partitioning.get(i).get(0),i);
+        }
+        return mooreFinalMachine;
+    }
+    private String[] getStateRow(int index,int position){
+        int size = states.get(0).size()+1;
+        String[] stateRow = new String[size];
+        stateRow[0] = "Q"+position;
+        System.out.println("inicio");
+        System.out.println("Q"+index);
+        for(int i=1;i<size-1;i++){
+            ArrayList<Integer> qStates = findStateSet(index);
+            System.out.println("Q"+blockOfTheState[qStates.get(i)]);
+            stateRow[i] = "Q"+blockOfTheState[qStates.get(i)];
+        }
+        ArrayList<Integer> qOutputs = findOutputSet(index);
+        stateRow[size-1] = qOutputs.get(1)+"";
+        //Hay que buscar el indice del primero
+        return stateRow;
+    }
+
+
+
     private void partitioningProcess(){
         int pastSize;
         int currentSize;
@@ -107,6 +133,17 @@ public class StateMachine {
         for(int i=0;i<states.size();i++){
             if(qState==states.get(i).get(0)){
                 ArrayList<Integer> stateWithoutIndex = states.get(i);
+                return stateWithoutIndex;
+            }
+        }
+        System.out.println("Null for "+qState);
+        return null;
+    }
+
+    private ArrayList<Integer> findOutputSet(int qState){
+        for(int i=0;i<states.size();i++){
+            if(qState==states.get(i).get(0)){
+                ArrayList<Integer> stateWithoutIndex = outPuts.get(i);
                 return stateWithoutIndex;
             }
         }

@@ -35,9 +35,9 @@ public class AutomatonController implements Initializable {
     private TableView<TableViewTest> mooreAutomatonTableview = new TableView<>();
 
     @FXML
-    private TableView<ArrayList<ArrayList<Integer>>> newMooreMachineTableView= new TableView<>();
+    private TableView<String[]> newMooreMachineTableView= new TableView<>();
     @FXML
-    private TableView<TableViewTest> newMealyMachineTableView= new TableView<>();
+    private TableView<String[]> newMealyMachineTableView= new TableView<>();
 
     @FXML
     private TextField numberOfStatesTxtField;
@@ -64,6 +64,8 @@ public class AutomatonController implements Initializable {
     private ArrayList<ArrayList<Integer>> statesMatrix= new ArrayList<>();
     private ArrayList<ArrayList<Integer>> outputsMatrix=new ArrayList<>();
     private StateMachine stateMachine;
+    private boolean finalMachineReady = false;
+    private String[][] finalMachineTable;
 
 
     @FXML
@@ -132,7 +134,9 @@ public class AutomatonController implements Initializable {
             statesMatrix.add(statesValues);
         }
         checkArray(statesMatrix);
+        finalMachineReady=true;
         stateMachine = new StateMachine(statesMatrix,outputsMatrix);
+        finalMachineTable = stateMachine.getMooreFinalMachine();
         insertNewMooreColumns();
         launchFXML("NewMooreMachine.fxml","Moore machine");
 
@@ -207,7 +211,9 @@ public class AutomatonController implements Initializable {
             insertMooreValues();
             insertMealyColumns();
             insertMealyValues();
-            insertNewMooreColumns();
+            if(finalMachineReady){
+                insertNewMooreColumns();
+            }
     }
 
 
@@ -247,13 +253,25 @@ public class AutomatonController implements Initializable {
     }
 
     private void insertNewMooreColumns(){
-        TableColumn<ArrayList<ArrayList<Integer>>,String> valueColumn = new TableColumn();
-        valueColumn.setCellValueFactory((p)->{
-            ArrayList<ArrayList<Integer>> x = p.getValue();
-            return new SimpleStringProperty(x != null && x.size()>0 ? x.get(0).get(0)+"" : "<no name>");
-        });
-        newMooreMachineTableView.getColumns().add(valueColumn);
-        newMooreMachineTableView.getItems().addAll(statesMatrix);
+        for(int i=0;i<finalMachineTable[0].length;i++){
+            TableColumn<String[],String> newColumn;
+            if(i==0){
+                newColumn = new TableColumn<>("State");
+            }
+            else if(i==finalMachineTable[0].length-1){
+                newColumn = new TableColumn<>("Output");
+            }
+            else{
+                newColumn = new TableColumn<>(transitions[i-1]);
+            }
+            int finalI = i;
+            newColumn.setCellValueFactory((p)->{
+                String[] x = p.getValue();
+                return new SimpleStringProperty(x != null && x.length>0 ? x[finalI] : "<no name>");
+            });
+            newMooreMachineTableView.getColumns().add(newColumn);
+        }
+        newMooreMachineTableView.getItems().addAll(finalMachineTable);
     }
 
     private void insertMealyColumns(){
