@@ -38,6 +38,8 @@ public class AutomatonController implements Initializable {
     private TableView<String[]> newMooreMachineTableView= new TableView<>();
     @FXML
     private TableView<String[]> newMealyMachineTableView= new TableView<>();
+    @FXML
+    private Label welcomeTxt;
 
     @FXML
     private TextField numberOfStatesTxtField;
@@ -71,6 +73,8 @@ public class AutomatonController implements Initializable {
 
     @FXML
     protected void startApplication() {
+        Stage stage = (Stage) welcomeTxt.getScene().getWindow();
+        stage.close();
         launchFXML("definition-of-table-view.fxml","Definition");
     }
 
@@ -94,11 +98,6 @@ public class AutomatonController implements Initializable {
         stage.setTitle(title);
         stage.setResizable(false);
         stage.show();
-        stage.setOnCloseRequest(new EventHandler<WindowEvent>() {
-            public void handle(WindowEvent we) {
-                Platform.exit();
-            }
-        });
     }
 
     private Parent loadFxml(String fxml) {
@@ -139,6 +138,8 @@ public class AutomatonController implements Initializable {
             stateMachine = new StateMachine(statesMatrix,outputsMatrix);
             finalMachineTable = stateMachine.getMooreFinalMachine();
             insertNewMooreColumns();
+            Stage stage = (Stage) mooreAutomatonTableview.getScene().getWindow();
+            stage.close();
             launchFXML("NewMooreMachine.fxml","Moore machine");
         }
         catch (Exception e){
@@ -176,6 +177,8 @@ public class AutomatonController implements Initializable {
             stateMachine = new StateMachine(statesMatrix,outputsMatrix);
             finalMachineTable = stateMachine.getMealyFinalMachine();
             insertNewMealyColumns();
+            Stage stage = (Stage) MealyAutomatonTableview.getScene().getWindow();
+            stage.close();
             launchFXML("NewMealyMachine.fxml","Mealy machine");
         }
         catch (Exception e){

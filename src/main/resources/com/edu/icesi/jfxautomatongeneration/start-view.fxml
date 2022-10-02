@@ -19,7 +19,7 @@
          <Font name="System Bold" size="25.0" />
       </font>
    </Label>
-   <Label text="Welcome to Automaton generation program. ¿What would you like to do?" textAlignment="CENTER" textFill="WHITE" wrapText="true" />
+   <Label fx:id="welcomeTxt" text="Welcome to Automaton generation program. ¿What would you like to do?" textAlignment="CENTER" textFill="WHITE" wrapText="true" />
     <Button onAction="#startApplication" prefHeight="26.0" prefWidth="83.0" text="Start" />
    <Button mnemonicParsing="false" onAction="#showInstructions" prefHeight="26.0" prefWidth="90.0" text="Instructions" />
 </VBox>
