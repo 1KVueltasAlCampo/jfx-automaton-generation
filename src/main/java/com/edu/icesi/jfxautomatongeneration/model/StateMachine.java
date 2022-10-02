@@ -30,7 +30,6 @@ public class StateMachine {
         deleteStatesRootUnconnected();
         createInitialPartition();
         partitioningProcess();
-        showPartitioning();
     }
 
     public String[][] getMooreFinalMachine(){
@@ -44,11 +43,8 @@ public class StateMachine {
         int size = states.get(0).size()+1;
         String[] stateRow = new String[size];
         stateRow[0] = "Q"+position;
-        System.out.println("inicio");
-        System.out.println("Q"+index);
         for(int i=1;i<size-1;i++){
             ArrayList<Integer> qStates = findStateSet(index);
-            System.out.println("Q"+blockOfTheState[qStates.get(i)]);
             stateRow[i] = "Q"+blockOfTheState[qStates.get(i)];
         }
         ArrayList<Integer> qOutputs = findOutputSet(index);
@@ -70,8 +66,6 @@ public class StateMachine {
         int size = 1+((states.get(0).size()-1)*2);
         String[] stateRow = new String[size];
         stateRow[0] = "Q"+position;
-        System.out.println("inicio");
-        System.out.println("Q"+index);
         for(int i=1;i<size;i++){
             ArrayList<Integer> qStates = findStateSet(index);
             ArrayList<Integer> qOutputs = findOutputSet(index);
@@ -107,7 +101,6 @@ public class StateMachine {
             }
             int index = isInCombinations(combinations, combination);
             if (index != -1) {
-                //System.out.println("Q"+outPuts.get(i).get(0)+" is in "+index);
                 blockOfTheState[outPuts.get(i).get(0)] = index;
                 partitioning.get(index).add(outPuts.get(i).get(0));
             } else {
@@ -115,7 +108,6 @@ public class StateMachine {
                 ArrayList<Integer> newCombination = new ArrayList<>();
                 newCombination.add(outPuts.get(i).get(0));
                 partitioning.add(newCombination); //Se añade un estado a la particion. EJ: Q1, Q0
-                //System.out.println("Q"+outPuts.get(i).get(0)+" is in "+(partitioning.size()-1));
                 blockOfTheState[outPuts.get(i).get(0)] = partitioning.size()-1;
             }
         }
@@ -125,7 +117,6 @@ public class StateMachine {
         //Validation to stop
         for(int i=0;i<partitioning.size();i++){
             ArrayList<Integer> newBlock = new ArrayList<>();
-            System.out.println("Size = "+partitioning.get(i).size());
                 for(int j=1;j<partitioning.get(i).size();j++){
                     int differentState = areInSameBlock(partitioning.get(i).get(0),partitioning.get(i).get(j));
                     if( differentState!= -1){
@@ -135,7 +126,6 @@ public class StateMachine {
                         j--;
                     }
                 }
-                System.out.println("Fin del ciclo "+"Size = "+partitioning.get(i).size());
                 if(newBlock.size()!=0){
                     partitioning.add(newBlock);
                 }
@@ -147,45 +137,30 @@ public class StateMachine {
         ArrayList<Integer> comparableStateSet = findStateSet(comparableState);
         if(firstStateSet!=null && comparableStateSet != null){
             for(int i=1;i<firstStateSet.size();i++){
-                System.out.println(firstStateSet.get(i)+":"+blockOfTheState[firstStateSet.get(i)]+" = "+comparableStateSet.get(i)+": "+blockOfTheState[comparableStateSet.get(i)]);
                 if(blockOfTheState[firstStateSet.get(i)]!=blockOfTheState[comparableStateSet.get(i)]){
                     return comparableState;
                 }
             }
         }
-        //System.out.println("Null "+firstState+" or "+comparableState);
         return -1;
     }
 
     private ArrayList<Integer> findStateSet(int qState){
+        return getIntegers(qState, states);
+    }
+
+    private ArrayList<Integer> getIntegers(int qState, ArrayList<ArrayList<Integer>> states) {
         for(int i=0;i<states.size();i++){
             if(qState==states.get(i).get(0)){
                 ArrayList<Integer> stateWithoutIndex = states.get(i);
                 return stateWithoutIndex;
             }
         }
-        System.out.println("Null for "+qState);
         return null;
     }
 
     private ArrayList<Integer> findOutputSet(int qState){
-        for(int i=0;i<states.size();i++){
-            if(qState==states.get(i).get(0)){
-                ArrayList<Integer> stateWithoutIndex = outPuts.get(i);
-                return stateWithoutIndex;
-            }
-        }
-        System.out.println("Null for "+qState);
-        return null;
-    }
-
-    private void showPartitioning() {
-        for (int i = 0; i < partitioning.size(); i++) {
-            System.out.println("Elements " + partitioning.get(i).size());
-            for (int j = 0; j < partitioning.get(i).size(); j++) {
-                System.out.println(partitioning.get(i).get(j));
-            }
-        }
+        return getIntegers(qState, outPuts);
     }
 
 
@@ -217,32 +192,20 @@ public class StateMachine {
     public void isConnectedToRoot() {
         isConnectedToRoot(0, 0);
         for (int j = 0; j < checkList.size(); j++) {
-            // System.out.println(checkList.get(j));
         }
     }
 
     private void isConnectedToRoot(int c, int r) {
         if ((c + 1) < tablesEnd) { //sus
-            int index = states.get(r).get(c + 1); //sus
-            //System.out.println(index+"a probar");
-            //System.out.println("Columna :"+c+" Fila :"+r);
+            int index = states.get(r).get(c + 1);
             if (!searchState(index)) {
-                //System.out.println("C :"+c+" F :"+r);
-                //System.out.println("No está: "+index);
                 checkList.add(index);
                 isConnectedToRoot(0, index);
                 isConnectedToRoot(c + 1, r);
             } else {
-                //System.out.println("Ya está: " + index);
                 isConnectedToRoot(c + 1, r);
-                //System.out.println("MUERTE");
-                //System.out.println("C :"+c+" F :"+r);
             }
         }
-        /*else{
-            System.out.println("Se murio "+c+""+r);
-        }
-         */
     }
 
     private boolean searchState(int state) {

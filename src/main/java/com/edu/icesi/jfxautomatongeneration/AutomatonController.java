@@ -134,7 +134,6 @@ public class AutomatonController implements Initializable {
             outputsMatrix.add(outputValues);
             statesMatrix.add(statesValues);
         }
-        checkArray(statesMatrix);
         mooreFinalMachineReady=true;
         stateMachine = new StateMachine(statesMatrix,outputsMatrix);
         finalMachineTable = stateMachine.getMooreFinalMachine();
@@ -164,7 +163,6 @@ public class AutomatonController implements Initializable {
             statesMatrix.add(statesValues);
             outputsMatrix.add(outputValues);
         }
-        checkArray(statesMatrix);
         mealyFinalMachineReady=true;
         stateMachine = new StateMachine(statesMatrix,outputsMatrix);
         finalMachineTable = stateMachine.getMealyFinalMachine();
@@ -173,30 +171,45 @@ public class AutomatonController implements Initializable {
         // Implement machine
     }
 
-
-
-    private void checkArray(ArrayList<ArrayList<Integer>> arrayList){
-        for(int i=0;i<arrayList.size();i++){
-            for(int j=0;j<arrayList.get(0).size();j++){
-                System.out.println(arrayList.get(i).get(j));
+    private boolean correctAutomatonDefinition(){
+        Alert a = new Alert(Alert.AlertType.NONE);
+        a.setAlertType(Alert.AlertType.ERROR);
+        a.setContentText("* Number of states must be greater than 2 \n" +
+                "* For transitions use only letters separated with comas \n"+
+                "* For outputs use only numbers separated with comas");
+        try{
+            if(Integer.parseInt(numberOfStatesTxtField.getText()) >= 2 ){
+                if(outputsTxtField.getText().matches("^(([0-9\s](,)?)*)+$")){
+                    if((transitionElementsTxtField.getText()).matches("^(([a-zA-Z\s](,)?)*)+$")){
+                        return true;
+                    }
+                }
             }
-            System.out.println();
+            throw new Exception();
+        }
+        catch (Exception e){
+            a.show();
+            return false;
         }
     }
 
     @FXML
     protected void buildMooreBtn(){
-        tableGenericInitialize();
-        insertMooreColumns();
-        insertMooreValues();
-        launchFXML("Mooreautomaton-table-view.fxml","Automaton table");
+        if(correctAutomatonDefinition()){
+            tableGenericInitialize();
+            insertMooreColumns();
+            insertMooreValues();
+            launchFXML("Mooreautomaton-table-view.fxml","Automaton table");
+        }
     }
     @FXML
     protected void buildMealyBtn() {
-        tableGenericInitialize();
-        insertMealyColumns();
-        insertMealyValues();
-        launchFXML("Mealyautomaton-table-view.fxml","Automaton table");
+        if(correctAutomatonDefinition()){
+            tableGenericInitialize();
+            insertMealyColumns();
+            insertMealyValues();
+            launchFXML("Mealyautomaton-table-view.fxml","Automaton table");
+        }
     }
 
     private void tableGenericInitialize(){
