@@ -64,7 +64,8 @@ public class AutomatonController implements Initializable {
     private ArrayList<ArrayList<Integer>> statesMatrix= new ArrayList<>();
     private ArrayList<ArrayList<Integer>> outputsMatrix=new ArrayList<>();
     private StateMachine stateMachine;
-    private boolean finalMachineReady = false;
+    private boolean mooreFinalMachineReady = false;
+    private boolean mealyFinalMachineReady = false;
     private String[][] finalMachineTable;
 
 
@@ -134,7 +135,7 @@ public class AutomatonController implements Initializable {
             statesMatrix.add(statesValues);
         }
         checkArray(statesMatrix);
-        finalMachineReady=true;
+        mooreFinalMachineReady=true;
         stateMachine = new StateMachine(statesMatrix,outputsMatrix);
         finalMachineTable = stateMachine.getMooreFinalMachine();
         insertNewMooreColumns();
@@ -164,8 +165,11 @@ public class AutomatonController implements Initializable {
             outputsMatrix.add(outputValues);
         }
         checkArray(statesMatrix);
+        mealyFinalMachineReady=true;
         stateMachine = new StateMachine(statesMatrix,outputsMatrix);
-        launchFXML("NewMooreMachine.fxml","Moore machine");
+        finalMachineTable = stateMachine.getMealyFinalMachine();
+        insertNewMealyColumns();
+        launchFXML("NewMealyMachine.fxml","Mealy machine");
         // Implement machine
     }
 
@@ -211,8 +215,11 @@ public class AutomatonController implements Initializable {
             insertMooreValues();
             insertMealyColumns();
             insertMealyValues();
-            if(finalMachineReady){
+            if(mooreFinalMachineReady){
                 insertNewMooreColumns();
+            }
+            if(mealyFinalMachineReady){
+                insertNewMealyColumns();
             }
     }
 
@@ -272,6 +279,28 @@ public class AutomatonController implements Initializable {
             newMooreMachineTableView.getColumns().add(newColumn);
         }
         newMooreMachineTableView.getItems().addAll(finalMachineTable);
+    }
+
+    private void insertNewMealyColumns(){
+        for(int i=0;i<finalMachineTable[0].length;i++){
+            TableColumn<String[],String> newColumn;
+            if(i==0){
+                newColumn = new TableColumn<>("State");
+            }
+            else if(i%2==0){
+                newColumn = new TableColumn<>("Value");
+            }
+            else{
+                newColumn=new TableColumn<>(transitions[(i-1)/2]);
+            }
+            int finalI = i;
+            newColumn.setCellValueFactory((p)->{
+                String[] x = p.getValue();
+                return new SimpleStringProperty(x != null && x.length>0 ? x[finalI] : "<no name>");
+            });
+            newMealyMachineTableView.getColumns().add(newColumn);
+        }
+        newMealyMachineTableView.getItems().addAll(finalMachineTable);
     }
 
     private void insertMealyColumns(){
