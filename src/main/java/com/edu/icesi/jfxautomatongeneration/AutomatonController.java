@@ -119,56 +119,71 @@ public class AutomatonController implements Initializable {
 
     @FXML
     void generateInitialMooreAutomaton(ActionEvent event) {
-        ObservableList<TableViewTest> list = mooreAutomatonTableview.getItems();
-        statesMatrix.clear();
-        outputsMatrix.clear();
-        for(int i=0;i<numberOfStates;i++){
-            ArrayList<Integer> statesValues = new ArrayList<>();
-            ArrayList<Integer> outputValues = new ArrayList<>();
-            statesValues.add(i);
-            outputValues.add(i);
-            for(int j=0;j<numberOfColumns;j++){
-                statesValues.add(Integer.parseInt(list.get(i).getOption(j).substring(1)));
+        try{
+            ObservableList<TableViewTest> list = mooreAutomatonTableview.getItems();
+            statesMatrix.clear();
+            outputsMatrix.clear();
+            for(int i=0;i<numberOfStates;i++){
+                ArrayList<Integer> statesValues = new ArrayList<>();
+                ArrayList<Integer> outputValues = new ArrayList<>();
+                statesValues.add(i);
+                outputValues.add(i);
+                for(int j=0;j<numberOfColumns;j++){
+                    statesValues.add(Integer.parseInt(list.get(i).getOption(j).substring(1)));
+                }
+                outputValues.add(Integer.parseInt(list.get(i).getOption(numberOfColumns)));
+                outputsMatrix.add(outputValues);
+                statesMatrix.add(statesValues);
             }
-            outputValues.add(Integer.parseInt(list.get(i).getOption(numberOfColumns)));
-            outputsMatrix.add(outputValues);
-            statesMatrix.add(statesValues);
+            mooreFinalMachineReady=true;
+            stateMachine = new StateMachine(statesMatrix,outputsMatrix);
+            finalMachineTable = stateMachine.getMooreFinalMachine();
+            insertNewMooreColumns();
+            launchFXML("NewMooreMachine.fxml","Moore machine");
         }
-        mooreFinalMachineReady=true;
-        stateMachine = new StateMachine(statesMatrix,outputsMatrix);
-        finalMachineTable = stateMachine.getMooreFinalMachine();
-        insertNewMooreColumns();
-        launchFXML("NewMooreMachine.fxml","Moore machine");
+        catch (Exception e){
+            Alert a = new Alert(Alert.AlertType.NONE);
+            a.setAlertType(Alert.AlertType.ERROR);
+            a.setContentText("Please fill all cells");
+            a.show();
+        }
 
     }
 
     @FXML
     void generateInitialAutomatonMealy(ActionEvent event) {
-        ObservableList<TableViewTest> mealyList = MealyAutomatonTableview.getItems();
-        statesMatrix.clear();
-        outputsMatrix.clear();
-        for(int i=0;i<numberOfStates;i++){
-            ArrayList<Integer> statesValues = new ArrayList<>();
-            ArrayList<Integer> outputValues = new ArrayList<>();
-            statesValues.add(i);
-            outputValues.add(i);
-            for(int j=0;j<numberOfColumns*2;j++){
-                if(j%2==0){
-                    statesValues.add(Integer.parseInt(mealyList.get(i).getOption(j).substring(1)));
+        try{
+            ObservableList<TableViewTest> mealyList = MealyAutomatonTableview.getItems();
+            statesMatrix.clear();
+            outputsMatrix.clear();
+            for(int i=0;i<numberOfStates;i++){
+                ArrayList<Integer> statesValues = new ArrayList<>();
+                ArrayList<Integer> outputValues = new ArrayList<>();
+                statesValues.add(i);
+                outputValues.add(i);
+                for(int j=0;j<numberOfColumns*2;j++){
+                    if(j%2==0){
+                        statesValues.add(Integer.parseInt(mealyList.get(i).getOption(j).substring(1)));
+                    }
+                    else{
+                        outputValues.add(Integer.parseInt(mealyList.get(i).getOption(j)));
+                    }
                 }
-                else{
-                    outputValues.add(Integer.parseInt(mealyList.get(i).getOption(j)));
-                }
+                statesMatrix.add(statesValues);
+                outputsMatrix.add(outputValues);
             }
-            statesMatrix.add(statesValues);
-            outputsMatrix.add(outputValues);
+            mealyFinalMachineReady=true;
+            stateMachine = new StateMachine(statesMatrix,outputsMatrix);
+            finalMachineTable = stateMachine.getMealyFinalMachine();
+            insertNewMealyColumns();
+            launchFXML("NewMealyMachine.fxml","Mealy machine");
         }
-        mealyFinalMachineReady=true;
-        stateMachine = new StateMachine(statesMatrix,outputsMatrix);
-        finalMachineTable = stateMachine.getMealyFinalMachine();
-        insertNewMealyColumns();
-        launchFXML("NewMealyMachine.fxml","Mealy machine");
-        // Implement machine
+        catch (Exception e){
+            Alert a = new Alert(Alert.AlertType.NONE);
+            a.setAlertType(Alert.AlertType.ERROR);
+            a.setContentText("Please fill all cells");
+            a.show();
+        }
     }
 
     private boolean correctAutomatonDefinition(){
