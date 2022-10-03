@@ -15,6 +15,7 @@ public class StateMachine {
     public ArrayList<ArrayList<Integer>> fPartitioning = new ArrayList<>();
 
 
+
     public StateMachine(ArrayList<ArrayList<Integer>> states, ArrayList<ArrayList<Integer>> outPuts) {
         this.states = states;
         checkList = new ArrayList<>();
@@ -25,6 +26,7 @@ public class StateMachine {
 
     }
 
+    //Runs all the process required
     public void machineProcess() {
         isConnectedToRoot();
         deleteStatesRootUnconnected();
@@ -32,6 +34,7 @@ public class StateMachine {
         partitioningProcess();
     }
 
+    //Returns an reduced Moore automaton machine
     public String[][] getMooreFinalMachine(){
         String[][] mooreFinalMachine = new String[partitioning.size()][states.size()+1];
         for(int i=0;i<partitioning.size();i++){
@@ -39,6 +42,8 @@ public class StateMachine {
         }
         return mooreFinalMachine;
     }
+
+    //Returns a reduced row, for a Moore machine
     private String[] getMooreStateRow(int index,int position){
         int size = states.get(0).size()+1;
         String[] stateRow = new String[size];
@@ -53,6 +58,7 @@ public class StateMachine {
         return stateRow;
     }
 
+    //Returns an reduced Mealy automaton machine
     public String[][] getMealyFinalMachine(){
         int sizeOfRows = 1+((states.get(0).size()-1)*2);
         String[][] mealyFinalMachine = new String[partitioning.size()][sizeOfRows];
@@ -62,6 +68,7 @@ public class StateMachine {
         return mealyFinalMachine;
     }
 
+    //Returns a reduced row, for a Mealy machine
     private String[] getMealyStateRow(int index,int position){
         int size = 1+((states.get(0).size()-1)*2);
         String[] stateRow = new String[size];
@@ -81,6 +88,7 @@ public class StateMachine {
     }
 
 
+    //Made partitioning on the automaton
     private void partitioningProcess(){
         int pastSize;
         int currentSize;
@@ -92,6 +100,7 @@ public class StateMachine {
         while(currentSize!=pastSize);
     }
 
+    //Create the first set of partitioning aiming to find the reduced machine
     public void createInitialPartition() {
         blockOfTheState = new int[states.size()];
         for (int i = 0; i < outPuts.size(); i++) {
@@ -113,6 +122,7 @@ public class StateMachine {
         }
     }
 
+    //It starts making partitions inside the initial partition
     public void createPartitioning(){
         //Validation to stop
         for(int i=0;i<partitioning.size();i++){
@@ -132,6 +142,7 @@ public class StateMachine {
         }
     }
 
+    //Validate if two states are in the same set verifying it at the previous obtained partition
     private int areInSameBlock(int firstState,int comparableState){
         ArrayList<Integer> firstStateSet = findStateSet(firstState);
         ArrayList<Integer> comparableStateSet = findStateSet(comparableState);
@@ -145,9 +156,11 @@ public class StateMachine {
         return -1;
     }
 
+    //Returns the set which contains an Q state
     private ArrayList<Integer> findStateSet(int qState){
         return getIntegers(qState, states);
     }
+
 
     private ArrayList<Integer> getIntegers(int qState, ArrayList<ArrayList<Integer>> states) {
         for(int i=0;i<states.size();i++){
@@ -159,9 +172,11 @@ public class StateMachine {
         return null;
     }
 
+    //Find the set which contains an output.
     private ArrayList<Integer> findOutputSet(int qState){
         return getIntegers(qState, outPuts);
     }
+
 
 
 
@@ -175,6 +190,7 @@ public class StateMachine {
     }
 
 
+    //Find all the states connected to the root and delete the ones disconnected
     public void deleteStatesRootUnconnected() {
         ArrayList<ArrayList<Integer>> newStates = new ArrayList<>();
         ArrayList<ArrayList<Integer>> newOutputs = new ArrayList<>();
@@ -188,7 +204,7 @@ public class StateMachine {
     }
 
 
-    //Recorrer matriz, seleccionar nodos conectados a la raiz
+    //Verify all the states connected to root
     public void isConnectedToRoot() {
         isConnectedToRoot(0, 0);
         for (int j = 0; j < checkList.size(); j++) {
@@ -208,6 +224,7 @@ public class StateMachine {
         }
     }
 
+    //Find a specific state
     private boolean searchState(int state) {
         for (int i = 0; i < checkList.size(); i++) {
             if (checkList.get(i) == state) {

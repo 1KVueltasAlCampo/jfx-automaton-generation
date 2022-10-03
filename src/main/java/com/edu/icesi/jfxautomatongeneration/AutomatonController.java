@@ -71,6 +71,7 @@ public class AutomatonController implements Initializable {
     private String[][] finalMachineTable;
 
 
+    //It opens the customize automaton options
     @FXML
     protected void startApplication() {
         Stage stage = (Stage) welcomeTxt.getScene().getWindow();
@@ -78,6 +79,7 @@ public class AutomatonController implements Initializable {
         launchFXML("definition-of-table-view.fxml","Definition");
     }
 
+    //Right here we have the data initializer
     private void initializeOptions(){
         states.clear();
         for(int i=0;i<numberOfStates;i++){
@@ -87,6 +89,8 @@ public class AutomatonController implements Initializable {
         outputsOptions = FXCollections.observableArrayList(Arrays.asList(outputs));
     }
 
+
+    //Generic method to launch fxml
     private void launchFXML(String fxml, String title) {
         Parent root = loadFxml(fxml);
         Scene scene = new Scene(root);
@@ -100,6 +104,7 @@ public class AutomatonController implements Initializable {
         stage.show();
     }
 
+    //Generic method to load fxml
     private Parent loadFxml(String fxml) {
         try {
             FXMLLoader fxmlLoader = new FXMLLoader(AutomatonApplication.class.getResource(fxml));
@@ -111,11 +116,14 @@ public class AutomatonController implements Initializable {
             throw new NullPointerException("Document is null");
         }
     }
+
+    //It opens the instructions stage
     @FXML
     protected void showInstructions(){
-
+        launchFXML("instructions.fxml","Instructions");
     }
 
+    //Initialize a Moore Automaton using the data received.
     @FXML
     void generateInitialMooreAutomaton(ActionEvent event) {
         try{
@@ -151,6 +159,7 @@ public class AutomatonController implements Initializable {
 
     }
 
+    //Initialize a Mealy Automaton using the data received.
     @FXML
     void generateInitialAutomatonMealy(ActionEvent event) {
         try{
@@ -189,6 +198,7 @@ public class AutomatonController implements Initializable {
         }
     }
 
+    //Validation on automaton definition
     private boolean correctAutomatonDefinition(){
         Alert a = new Alert(Alert.AlertType.NONE);
         a.setAlertType(Alert.AlertType.ERROR);
@@ -211,6 +221,7 @@ public class AutomatonController implements Initializable {
         }
     }
 
+    //Create a Moore machine with the data received
     @FXML
     protected void buildMooreBtn(){
         if(correctAutomatonDefinition()){
@@ -220,6 +231,7 @@ public class AutomatonController implements Initializable {
             launchFXML("Mooreautomaton-table-view.fxml","Automaton table");
         }
     }
+    //Create a Mealy machine with the data received
     @FXML
     protected void buildMealyBtn() {
         if(correctAutomatonDefinition()){
@@ -230,6 +242,7 @@ public class AutomatonController implements Initializable {
         }
     }
 
+    //Create a generic table, this allows us to fullfill it with Moore or Mealy automaton.
     private void tableGenericInitialize(){
         numberOfStates = Integer.parseInt(numberOfStatesTxtField.getText());
         transitions = transitionElementsTxtField.getText().split(",");
@@ -240,6 +253,7 @@ public class AutomatonController implements Initializable {
 
 
 
+    //Initializer of the generic table
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
             insertMooreColumns();
@@ -255,6 +269,8 @@ public class AutomatonController implements Initializable {
     }
 
 
+
+    //Fullfill every column in row with a comboBox to select the transitions.
     private void fillWithCombobox(TableColumn<TableViewTest, StringProperty> column, ObservableList cbBox){
 
         column.setCellFactory(col -> {
@@ -272,6 +288,7 @@ public class AutomatonController implements Initializable {
             return c;
         });
     }
+
 
     private void insertMooreColumns(){
         TableColumn statesColumn = insertStatesColumn();
